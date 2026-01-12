@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Reporte Misioneros</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-header">
+                        <img src="logo/Central.png" alt="Logo" style="height: 50px; margin-right: 15px;">
+                    </div>
+                    <div>
+                        <h1>⚙️ Panel de Administración</h1>
+                        <p class="header-subtitle">Sistema de Gestión de Reportes Misioneros</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="userName"></span>
+                    <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Banner de bienvenida -->
+            <div class="admin-banner">
+                <div class="banner-content">
+                    <h2>👋 Bienvenido al Panel de Administración</h2>
+                    <p>Gestiona todos los reportes misioneros desde un solo lugar. Accede a estadísticas, reportes y administra los grupos.</p>
+                </div>
+            </div>
+
+            <!-- Estadísticas rápidas -->
+            <div class="stats-grid">
+                <div class="stat-card stat-green">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="totalReportes">0</h3>
+                        <p>Total Reportes</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-blue">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Grupos Activos</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-orange">
+                    <div class="stat-icon">👨‍👩‍👧‍👦</div>
+                    <div class="stat-info">
+                        <h3 id="totalAsistentes">0</h3>
+                        <p>Total Asistentes</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-purple">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <h3 id="promedioAsistencia">0</h3>
+                        <p>Promedio por Evento</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupos Misioneros -->
+            <div class="section">
+                <h3 class="section-title">📍 Grupos Misioneros</h3>
+                <div class="admin-groups-grid">
+                    <div class="admin-group-card sauce">
+                        <div class="group-card-header">
+                            <img src="logo/El Sauce.png" alt="El Sauce" class="group-card-logo">
+                            <div>
+                                <h4>Grupo N°1 - El Sauce</h4>
+                                <p class="group-leader">👨‍💼 Líder: Pastor Denis Nolasco</p>
+                            </div>
+                        </div>
+                        
+                        <div class="equipo-section">
+                            <h5 class="equipo-title">👥 Equipo de Auxiliares</h5>
+                            <div class="auxiliares-mini-grid" id="auxiliaresSauce">
+                                <!-- Se llenará dinámicamente -->
+                            </div>
+                        </div>
+                        
+                        <div class="group-card-stats">
+                            <div class="mini-stat">
+                                <span class="mini-stat-label">Total Equipo</span>
+                                <span class="mini-stat-value">13</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-stat-label">Reportes</span>
+                                <span class="mini-stat-value" id="reportesSauce">0</span>
+                            </div>
+                        </div>
+                        <button class="btn-group-access" onclick="verGrupo('sauce')">
+                            Ver Reportes →
+                        </button>
+                    </div>
+
+                    <div class="admin-group-card pital">
+                        <div class="group-card-header">
+                            <img src="logo/El Pital.png" alt="El Pital" class="group-card-logo">
+                            <div>
+                                <h4>Grupo N°2 - El Pital</h4>
+                                <p class="group-leader">👨‍💼 Líder: Pastor Cesar Menjivar</p>
+                            </div>
+                        </div>
+                        
+                        <div class="equipo-section">
+                            <h5 class="equipo-title">👥 Equipo de Auxiliares</h5>
+                            <div class="auxiliares-mini-grid" id="auxiliaresPital">
+                                <!-- Se llenará dinámicamente -->
+                            </div>
+                        </div>
+                        
+                        <div class="group-card-stats">
+                            <div class="mini-stat">
+                                <span class="mini-stat-label">Total Equipo</span>
+                                <span class="mini-stat-value">10</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-stat-label">Reportes</span>
+                                <span class="mini-stat-value" id="reportesPital">0</span>
+                            </div>
+                        </div>
+                        <button class="btn-group-access" onclick="verGrupo('pital')">
+                            Ver Reportes →
+                        </button>
+                    </div>
+
+                    <div class="admin-group-card tekera">
+                        <div class="group-card-header">
+                            <img src="logo/La Tekera.png" alt="La Tekera" class="group-card-logo">
+                            <div>
+                                <h4>Grupo N°3 - La Tekera</h4>
+                                <p class="group-leader">👩‍💼 Líder: Damaris de Nolasco</p>
+                            </div>
+                        </div>
+                        
+                        <div class="equipo-section">
+                            <h5 class="equipo-title">👥 Equipo de Auxiliares</h5>
+                            <div class="auxiliares-mini-grid" id="auxiliaresTekera">
+                                <!-- Se llenará dinámicamente -->
+                            </div>
+                        </div>
+                        
+                        <div class="group-card-stats">
+                            <div class="mini-stat">
+                                <span class="mini-stat-label">Total Equipo</span>
+                                <span class="mini-stat-value">9</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-stat-label">Reportes</span>
+                                <span class="mini-stat-value" id="reportesTekera">0</span>
+                            </div>
+                        </div>
+                        <button class="btn-group-access" onclick="verGrupo('tekera')">
+                            Ver Reportes →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="section">
+                <h3 class="section-title">🚀 Acciones Rápidas</h3>
+                <div class="quick-actions-grid">
+                    <button class="action-btn action-primary" onclick="window.location.href='reportes-misiones.html'">
+                        <span class="action-icon">📋</span>
+                        <span class="action-text">
+                            <strong>Ver Todas las Misiones</strong>
+                            <small>Acceder al selector de grupos</small>
+                        </span>
+                    </button>
+                    <button class="action-btn action-success" onclick="verEstadisticasGenerales()">
+                        <span class="action-icon">📊</span>
+                        <span class="action-text">
+                            <strong>Estadísticas Generales</strong>
+                            <small>Ver análisis completo</small>
+                        </span>
+                    </button>
+                    <button class="action-btn action-info" onclick="exportarDatos()">
+                        <span class="action-icon">📥</span>
+                        <span class="action-text">
+                            <strong>Exportar Reportes</strong>
+                            <small>Descargar datos en Excel</small>
+                        </span>
+                    </button>
+                    <button class="action-btn action-warning" onclick="configuracion()">
+                        <span class="action-icon">⚙️</span>
+                        <span class="action-text">
+                            <strong>Configuración</strong>
+                            <small>Ajustes del sistema</small>
+                        </span>
+                    </button>
+                    <button class="action-btn action-danger" onclick="reiniciarSistema()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                        <span class="action-icon">🔄</span>
+                        <span class="action-text">
+                            <strong>Reiniciar Sistema</strong>
+                            <small>Limpiar todos los datos</small>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Control de Asistencia por Grupo -->
+            <div class="section">
+                <h3 class="section-title">📊 Control de Asistencia por Grupo</h3>
+                
+                <!-- Resumen general -->
+                <div class="table-container" style="margin-bottom: 30px;">
+                    <h4 style="margin-bottom: 15px; color: #333;">📈 Resumen General</h4>
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Filial</th>
+                                <th>Grupo</th>
+                                <th>Líder</th>
+                                <th style="text-align: center;">Total Reportes</th>
+                                <th style="text-align: center;">Total Asistentes</th>
+                                <th style="text-align: center;">Promedio por Evento</th>
+                                <th style="text-align: center;">Adultos</th>
+                                <th style="text-align: center;">Niños</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaControlAsistencia">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 30px; color: #999;">
+                                    Cargando datos...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Detalle por integrante de cada grupo -->
+                <div id="detalleGrupos">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Reportes recientes -->
+            <div class="section">
+                <h3 class="section-title">� Lista de Reportes</h3>
+                <div class="recent-activity">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Filial</th>
+                                <th>Grupo</th>
+                                <th>Tipo</th>
+                                <th style="text-align: center;">Asist. Filial</th>
+                                <th style="text-align: center;">Asist. Grupo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="actividadReciente">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 30px; color: #999;">
+                                    No hay actividad reciente
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="grupos-data.js"></script>
+    <script>
+        // Verificar sesión al cargar la página
+        if (!verificarSesion()) {
+            window.location.href = 'index.html';
+        }
+        
+        // Verificar que sea el administrador
+        const usuario = obtenerUsuarioActual();
+        if (usuario.rol !== 'administrador') {
+            alert('Acceso denegado. Esta página es solo para administradores.');
+            cerrarSesion();
+        }
+        
+        // Mostrar nombre del usuario
+        document.getElementById('userName').textContent = usuario.nombre;
+
+        // Cargar equipos de cada grupo
+        function cargarEquipos() {
+            // Grupo El Sauce
+            const sauceGrid = document.getElementById('auxiliaresSauce');
+            GRUPOS_DATA.sauce.auxiliares.forEach(aux => {
+                const div = document.createElement('div');
+                div.className = 'auxiliar-mini-card';
+                div.innerHTML = `<span class="aux-icon">${aux.icono}</span><span class="aux-name">${aux.nombre}</span>`;
+                sauceGrid.appendChild(div);
+            });
+
+            // Grupo El Pital
+            const pitalGrid = document.getElementById('auxiliaresPital');
+            GRUPOS_DATA.pital.auxiliares.forEach(aux => {
+                const div = document.createElement('div');
+                div.className = 'auxiliar-mini-card';
+                div.innerHTML = `<span class="aux-icon">${aux.icono}</span><span class="aux-name">${aux.nombre}</span>`;
+                pitalGrid.appendChild(div);
+            });
+
+            // Grupo La Tekera
+            const tekeraGrid = document.getElementById('auxiliaresTekera');
+            GRUPOS_DATA.tekera.auxiliares.forEach(aux => {
+                const div = document.createElement('div');
+                div.className = 'auxiliar-mini-card';
+                div.innerHTML = `<span class="aux-icon">${aux.icono}</span><span class="aux-name">${aux.nombre}</span>`;
+                tekeraGrid.appendChild(div);
+            });
+        }
+
+        // Cargar tabla de control de asistencia
+        function cargarControlAsistencia() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const tbody = document.getElementById('tablaControlAsistencia');
+            
+            tbody.innerHTML = '';
+            
+            // Usar GRUPOS_DATA para mantener consistencia
+            Object.keys(GRUPOS_DATA).forEach(grupoKey => {
+                const grupoInfo = GRUPOS_DATA[grupoKey];
+                const grupo = {
+                    key: grupoKey,
+                    nombre: grupoInfo.nombre,
+                    mision: grupoInfo.mision,
+                    lider: grupoInfo.lider,
+                    icono: grupoInfo.emoji
+                };
+                // Filtrar por nombre de grupo o por misión
+                const reportesGrupo = reportes.filter(r => 
+                    r.grupo === grupo.nombre || 
+                    r.mision === grupo.mision
+                );
+                const totalReportes = reportesGrupo.length;
+                const totalAsistentes = reportesGrupo.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+                const totalAdultos = reportesGrupo.reduce((sum, r) => sum + parseInt(r.adultos || 0), 0);
+                const totalNinos = reportesGrupo.reduce((sum, r) => sum + parseInt(r.ninos || 0), 0);
+                const promedio = totalReportes > 0 ? Math.round(totalAsistentes / totalReportes) : 0;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${grupo.icono} ${grupo.mision}</strong></td>
+                    <td>${grupo.nombre}</td>
+                    <td>${grupo.lider}</td>
+                    <td style="text-align: center;"><span class="badge-count" style="background: #6c757d;">${totalReportes}</span></td>
+                    <td style="text-align: center;"><span class="badge-count" style="background: #28a745; font-size: 16px;">${totalAsistentes}</span></td>
+                    <td style="text-align: center;"><span class="badge-count" style="background: #667eea;">${promedio}</span></td>
+                    <td style="text-align: center;">${totalAdultos}</td>
+                    <td style="text-align: center;">${totalNinos}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Agregar fila de totales
+            const totalGeneralReportes = reportes.length;
+            const totalGeneralAsistentes = reportes.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+            const totalGeneralAdultos = reportes.reduce((sum, r) => sum + parseInt(r.adultos || 0), 0);
+            const totalGeneralNinos = reportes.reduce((sum, r) => sum + parseInt(r.ninos || 0), 0);
+            const promedioGeneral = totalGeneralReportes > 0 ? Math.round(totalGeneralAsistentes / totalGeneralReportes) : 0;
+            
+            const rowTotal = document.createElement('tr');
+            rowTotal.style.background = '#f8f9fa';
+            rowTotal.style.fontWeight = 'bold';
+            rowTotal.innerHTML = `
+                <td colspan="3" style="text-align: right; padding-right: 20px;"><strong>📊 TOTALES GENERALES</strong></td>
+                <td style="text-align: center;"><strong>${totalGeneralReportes}</strong></td>
+                <td style="text-align: center;"><strong style="color: #28a745; font-size: 18px;">${totalGeneralAsistentes}</strong></td>
+                <td style="text-align: center;"><strong>${promedioGeneral}</strong></td>
+                <td style="text-align: center;"><strong>${totalGeneralAdultos}</strong></td>
+                <td style="text-align: center;"><strong>${totalGeneralNinos}</strong></td>
+            `;
+            tbody.appendChild(rowTotal);
+        }
+
+        // Función para imprimir tabla de asistencia de un grupo específico
+        function imprimirTablaGrupo(grupoKey) {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const grupoInfo = GRUPOS_DATA[grupoKey];
+            const nombreGrupo = grupoInfo.nombre;
+            const reportesGrupo = reportes.filter(r => 
+                r.grupo === nombreGrupo || 
+                r.mision === grupoInfo.mision
+            );
+            
+            // Crear lista completa de integrantes
+            const integrantes = [
+                { nombre: grupoInfo.lider, icono: grupoInfo.liderIcono, esLider: true }
+            ];
+            grupoInfo.auxiliares.forEach(aux => {
+                integrantes.push({ nombre: aux.nombre, icono: aux.icono, esLider: false });
+            });
+            
+            // Generar filas de la tabla
+            let filasHTML = '';
+            integrantes.forEach(integrante => {
+                let asistio = 0;
+                let noAsistio = 0;
+                let permiso = 0;
+                
+                reportesGrupo.forEach(reporte => {
+                    if (reporte.asistencia && typeof reporte.asistencia === 'object') {
+                        let estado = null;
+                        if (reporte.asistencia[integrante.nombre]) {
+                            estado = reporte.asistencia[integrante.nombre];
+                        } else if (reporte.asistencia[integrante.nombre + ' (Líder)']) {
+                            estado = reporte.asistencia[integrante.nombre + ' (Líder)'];
+                        }
+                        
+                        if (estado === 'asistio') asistio++;
+                        else if (estado === 'falta') noAsistio++;
+                        else if (estado === 'permiso') permiso++;
+                    }
+                });
+                
+                const totalReportes = reportesGrupo.length;
+                const porcentaje = totalReportes > 0 ? Math.round((asistio / totalReportes) * 100) : 0;
+                
+                filasHTML += `
+                    <tr>
+                        <td style="padding: 6px 4px; border: 1px solid #ddd;">
+                            <strong>${integrante.icono} ${integrante.nombre}</strong>
+                            ${integrante.esLider ? '<span class="badge-lider">LÍDER</span>' : ''}
+                        </td>
+                        <td style="padding: 6px 4px; text-align: center; border: 1px solid #ddd; background: #d4edda; color: #155724; font-weight: bold; font-size: 11px;">${asistio}</td>
+                        <td style="padding: 6px 4px; text-align: center; border: 1px solid #ddd; background: #f8d7da; color: #721c24; font-weight: bold; font-size: 11px;">${noAsistio}</td>
+                        <td style="padding: 6px 4px; text-align: center; border: 1px solid #ddd; background: #fff3cd; color: #856404; font-weight: bold; font-size: 11px;">${permiso}</td>
+                        <td style="padding: 6px 4px; text-align: center; border: 1px solid #ddd; font-weight: bold; font-size: 11px;">${totalReportes}</td>
+                        <td style="padding: 6px 4px; text-align: center; border: 1px solid #ddd; font-weight: bold; color: ${porcentaje >= 80 ? '#28a745' : porcentaje >= 50 ? '#ffc107' : '#dc3545'}; font-size: 11px;">${porcentaje}%</td>
+                    </tr>
+                `;
+            });
+            
+            // Crear ventana de impresión
+            const ventanaImpresion = window.open('', '_blank', 'width=900,height=1100');
+            ventanaImpresion.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Control de Asistencia - ${grupoInfo.mision}</title>
+                    <style>
+                        @page { 
+                            margin: 1.5cm; 
+                            size: letter portrait;
+                        }
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: Arial, sans-serif;
+                            padding: 15px;
+                            color: #333;
+                            font-size: 11px;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 20px;
+                            border-bottom: 3px solid #667eea;
+                            padding-bottom: 12px;
+                        }
+                        .header h1 {
+                            color: #667eea;
+                            margin: 3px 0;
+                            font-size: 18px;
+                        }
+                        .header h2 {
+                            color: #764ba2;
+                            margin: 3px 0;
+                            font-size: 14px;
+                        }
+                        .info {
+                            margin-bottom: 15px;
+                            font-size: 10px;
+                            line-height: 1.6;
+                        }
+                        .info p {
+                            margin: 3px 0;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
+                            font-size: 10px;
+                        }
+                        th {
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 8px 4px;
+                            text-align: center;
+                            font-size: 10px;
+                            border: 1px solid #5a67d8;
+                        }
+                        th:first-child {
+                            text-align: left;
+                            width: 35%;
+                        }
+                        th:nth-child(2), th:nth-child(3), th:nth-child(4) {
+                            width: 13%;
+                        }
+                        th:nth-child(5) {
+                            width: 13%;
+                        }
+                        th:nth-child(6) {
+                            width: 13%;
+                        }
+                        td {
+                            padding: 6px 4px;
+                            border: 1px solid #ddd;
+                            font-size: 10px;
+                        }
+                        td:first-child {
+                            font-size: 9px;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        .badge-lider {
+                            font-size: 7px;
+                            background: #667eea;
+                            color: white;
+                            padding: 1px 4px;
+                            border-radius: 2px;
+                            margin-left: 4px;
+                            display: inline-block;
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            text-align: center;
+                            font-size: 9px;
+                            color: #666;
+                            padding-top: 10px;
+                            border-top: 2px solid #e0e0e0;
+                        }
+                        @media print {
+                            button { display: none; }
+                            body { padding: 0; }
+                            .header { margin-bottom: 15px; padding-bottom: 10px; }
+                            .info { margin-bottom: 10px; }
+                            table { margin-top: 5px; }
+                            .footer { margin-top: 15px; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>📊 CONTROL DE ASISTENCIA POR GRUPO</h1>
+                        <h2>${grupoInfo.icono} ${grupoInfo.mision} - ${nombreGrupo}</h2>
+                    </div>
+                    
+                    <div class="info">
+                        <p><strong>Líder del Grupo:</strong> ${grupoInfo.lider}</p>
+                        <p><strong>Total de Reportes:</strong> ${reportesGrupo.length} | <strong>Integrantes:</strong> ${integrantes.length} (1 Líder + ${grupoInfo.auxiliares.length} Auxiliares) | <strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Integrante</th>
+                                <th>✅ Asistió</th>
+                                <th>❌ Faltó</th>
+                                <th>📋 Permiso</th>
+                                <th>📊 Total</th>
+                                <th>% Asist.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filasHTML}
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        <p>Sistema de Reportes Misioneros 2026 | Generado: ${new Date().toLocaleString('es-ES')}</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button onclick="window.print()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold;">🖨️ Imprimir</button>
+                        <button onclick="window.close()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 8px;">✖️ Cerrar</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            ventanaImpresion.document.close();
+        }
+
+        // Cargar detalle de asistencia por integrantes de cada grupo
+        function cargarDetalleGrupos() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const container = document.getElementById('detalleGrupos');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Procesar cada grupo
+            Object.keys(GRUPOS_DATA).forEach(grupoKey => {
+                const grupoInfo = GRUPOS_DATA[grupoKey];
+                const nombreGrupo = grupoInfo.nombre;
+                
+                // Filtrar reportes de este grupo por nombre o misión
+                const reportesGrupo = reportes.filter(r => 
+                    r.grupo === nombreGrupo || 
+                    r.mision === grupoInfo.mision
+                );
+                
+                // Crear sección para el grupo
+                const seccionGrupo = document.createElement('div');
+                seccionGrupo.style.marginTop = '30px';
+                
+                // Encabezado con título y botón de imprimir
+                const encabezado = document.createElement('div');
+                encabezado.style.display = 'flex';
+                encabezado.style.justifyContent = 'space-between';
+                encabezado.style.alignItems = 'center';
+                encabezado.style.marginBottom = '15px';
+                
+                const titulo = document.createElement('h4');
+                titulo.style.color = '#667eea';
+                titulo.style.fontSize = '16px';
+                titulo.style.margin = '0';
+                titulo.innerHTML = `${grupoInfo.icono} ${grupoInfo.mision} - ${nombreGrupo}`;
+                
+                const btnImprimir = document.createElement('button');
+                btnImprimir.innerHTML = '🖨️ Imprimir Tabla';
+                btnImprimir.style.padding = '8px 16px';
+                btnImprimir.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                btnImprimir.style.color = 'white';
+                btnImprimir.style.border = 'none';
+                btnImprimir.style.borderRadius = '6px';
+                btnImprimir.style.cursor = 'pointer';
+                btnImprimir.style.fontSize = '13px';
+                btnImprimir.style.fontWeight = 'bold';
+                btnImprimir.style.transition = 'transform 0.2s';
+                btnImprimir.onmouseover = function() { this.style.transform = 'scale(1.05)'; };
+                btnImprimir.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                btnImprimir.onclick = function() { imprimirTablaGrupo(grupoKey); };
+                
+                encabezado.appendChild(titulo);
+                encabezado.appendChild(btnImprimir);
+                seccionGrupo.appendChild(encabezado);
+                
+                // Crear tabla
+                const tabla = document.createElement('table');
+                tabla.style.width = '100%';
+                tabla.style.borderCollapse = 'collapse';
+                tabla.style.fontSize = '13px';
+                tabla.style.background = '#fff';
+                tabla.style.borderRadius = '8px';
+                tabla.style.overflow = 'hidden';
+                tabla.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                
+                // Header
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #5a67d8;">Integrante</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #5a67d8; width: 120px;">✅ Asistió</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #5a67d8; width: 120px;">❌ No Asistió</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #5a67d8; width: 120px;">📋 Permiso</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #5a67d8; width: 100px;">📊 Total</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #5a67d8; width: 120px;">% Asistencia</th>
+                    </tr>
+                `;
+                tabla.appendChild(thead);
+                
+                // Body
+                const tbody = document.createElement('tbody');
+                
+                // Crear lista completa de integrantes (líder + auxiliares)
+                const integrantes = [
+                    { nombre: grupoInfo.lider, icono: grupoInfo.liderIcono, esLider: true }
+                ];
+                
+                grupoInfo.auxiliares.forEach(aux => {
+                    integrantes.push({ nombre: aux.nombre, icono: aux.icono, esLider: false });
+                });
+                
+                // Procesar cada integrante
+                integrantes.forEach((integrante, index) => {
+                    let asistio = 0;
+                    let noAsistio = 0;
+                    let permiso = 0;
+                    
+                    // Contar asistencias en todos los reportes del grupo
+                    reportesGrupo.forEach(reporte => {
+                        if (reporte.asistencia && typeof reporte.asistencia === 'object') {
+                            // Buscar por nombre exacto o con " (Líder)" al final
+                            let estado = null;
+                            
+                            // Intentar encontrar el estado de asistencia
+                            if (reporte.asistencia[integrante.nombre]) {
+                                estado = reporte.asistencia[integrante.nombre];
+                            } else if (reporte.asistencia[integrante.nombre + ' (Líder)']) {
+                                estado = reporte.asistencia[integrante.nombre + ' (Líder)'];
+                            }
+                            
+                            // Contar según el estado
+                            if (estado === 'asistio') asistio++;
+                            else if (estado === 'falta') noAsistio++;
+                            else if (estado === 'permiso') permiso++;
+                        }
+                    });
+                    
+                    const totalReportes = reportesGrupo.length;
+                    const porcentaje = totalReportes > 0 ? Math.round((asistio / totalReportes) * 100) : 0;
+                    
+                    // Color de la barra de porcentaje
+                    let colorBarra = '#dc3545'; // Rojo
+                    if (porcentaje >= 80) colorBarra = '#28a745'; // Verde
+                    else if (porcentaje >= 50) colorBarra = '#ffc107'; // Amarillo
+                    
+                    const row = document.createElement('tr');
+                    row.style.background = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
+                    row.style.borderBottom = '1px solid #e9ecef';
+                    
+                    row.innerHTML = `
+                        <td style="padding: 10px; border-right: 1px solid #e9ecef;">
+                            <span style="font-weight: ${integrante.esLider ? 'bold' : 'normal'}; color: ${integrante.esLider ? '#667eea' : '#333'};">
+                                ${integrante.icono} ${integrante.nombre}
+                                ${integrante.esLider ? '<span style="font-size: 10px; background: #667eea; color: white; padding: 2px 6px; border-radius: 3px; margin-left: 8px;">LÍDER</span>' : ''}
+                            </span>
+                        </td>
+                        <td style="padding: 10px; text-align: center; border-right: 1px solid #e9ecef;">
+                            <span style="background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
+                                ${asistio}
+                            </span>
+                        </td>
+                        <td style="padding: 10px; text-align: center; border-right: 1px solid #e9ecef;">
+                            <span style="background: #f8d7da; color: #721c24; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
+                                ${noAsistio}
+                            </span>
+                        </td>
+                        <td style="padding: 10px; text-align: center; border-right: 1px solid #e9ecef;">
+                            <span style="background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
+                                ${permiso}
+                            </span>
+                        </td>
+                        <td style="padding: 10px; text-align: center; border-right: 1px solid #e9ecef; font-weight: bold;">
+                            ${totalReportes}
+                        </td>
+                        <td style="padding: 10px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <div style="flex: 1; background: #e9ecef; border-radius: 10px; height: 20px; overflow: hidden; max-width: 60px;">
+                                    <div style="background: ${colorBarra}; height: 100%; width: ${porcentaje}%; transition: width 0.3s;"></div>
+                                </div>
+                                <span style="font-weight: bold; color: ${colorBarra}; min-width: 40px;">${porcentaje}%</span>
+                            </div>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                tabla.appendChild(tbody);
+                seccionGrupo.appendChild(tabla);
+                container.appendChild(seccionGrupo);
+            });
+        }
+
+        // Cargar estadísticas
+        function cargarEstadisticas() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            
+            // Total de reportes
+            document.getElementById('totalReportes').textContent = reportes.length;
+            
+            // Total de asistentes
+            const totalAsistentes = reportes.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+            document.getElementById('totalAsistentes').textContent = totalAsistentes.toLocaleString();
+            
+            // Promedio de asistencia
+            const promedio = reportes.length > 0 ? Math.round(totalAsistentes / reportes.length) : 0;
+            document.getElementById('promedioAsistencia').textContent = promedio;
+            
+            // Reportes por grupo
+            const reportesSauce = reportes.filter(r => r.grupo === 'Grupo N°1 El Sauce').length;
+            const reportesPital = reportes.filter(r => r.grupo === 'Grupo N°2 El Pital').length;
+            const reportesTekera = reportes.filter(r => r.grupo === 'Grupo N°3 La Tekera').length;
+            
+            document.getElementById('reportesSauce').textContent = reportesSauce;
+            document.getElementById('reportesPital').textContent = reportesPital;
+            document.getElementById('reportesTekera').textContent = reportesTekera;
+            
+            // Actividad reciente
+            cargarActividadReciente(reportes);
+        }
+
+        function cargarActividadReciente(reportes) {
+            const tbody = document.getElementById('actividadReciente');
+            
+            if (reportes.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 30px; color: #999;">
+                            No hay reportes registrados
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            reportes.slice(0, 5).forEach(reporte => {
+                // Calcular asistencia total de la filial
+                const reportesFilial = reportes.filter(r => r.mision === reporte.mision);
+                const asistenciaFilial = reportesFilial.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reporte.fecha}</td>
+                    <td><strong>${reporte.mision || 'N/A'}</strong></td>
+                    <td>${reporte.grupo}</td>
+                    <td>${reporte.tipo}</td>
+                    <td style="text-align: center;"><span class="badge-count" style="background: #17a2b8;">${asistenciaFilial}</span></td>
+                    <td style="text-align: center;"><span class="badge-count">${reporte.total}</span></td>
+                    <td>
+                        <button class="btn-small" onclick="verDetalleReporteAdmin('${reporte.fechaCreacion}')">&#128065; Ver</button>
+                        <button class="btn-small" style="background: #6c757d;" onclick="imprimirReporteIndividual('${reporte.fechaCreacion}')">&#128424; Imprimir</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function verDetalleReporteAdmin(fechaCreacion) {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reporte = reportes.find(r => r.fechaCreacion === fechaCreacion);
+            
+            if (!reporte) return;
+            
+            let asistenciaTexto = '\n\n📋 ASISTENCIA:\n';
+            for (const [nombre, estado] of Object.entries(reporte.asistencia || {})) {
+                const emoji = estado === 'asistio' ? '✅' : estado === 'permiso' ? '📝' : '❌';
+                asistenciaTexto += `${emoji} ${nombre}\n`;
+            }
+            
+            alert(`📊 DETALLE DEL REPORTE\n\n` +
+                  `Grupo: ${reporte.grupo}\n` +
+                  `Misión: ${reporte.mision}\n` +
+                  `Líder: ${reporte.lider}\n\n` +
+                  `Fecha: ${reporte.fecha}\n` +
+                  `Tipo: ${reporte.tipo}\n` +
+                  `Adultos: ${reporte.adultos}\n` +
+                  `Niños: ${reporte.ninos}\n` +
+                  `Total: ${reporte.total}\n\n` +
+                  `📝 Observaciones: ${reporte.observaciones || 'N/A'}\n` +
+                  `✅ Actividad Realizada: ${reporte.actividadRealizada || 'N/A'}\n` +
+                  `📆 Actividad Programada: ${reporte.actividadProgramada || 'N/A'}\n` +
+                  `🏠 Visitas: ${reporte.visitasRealizadas || 'N/A'}\n` +
+                  `🏥 Enfermos: ${reporte.hermanosEnfermos || 'N/A'}` +
+                  asistenciaTexto);
+        }
+
+        // Función para ver grupos específicos
+        function verGrupo(grupo) {
+            sessionStorage.setItem('grupoAsignado', grupo);
+            window.location.href = 'reporte-grupo.html';
+        }
+
+        function imprimirReporteIndividual(fechaCreacion) {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reporte = reportes.find(r => r.fechaCreacion === fechaCreacion);
+            
+            if (!reporte) {
+                alert('No se encontró el reporte');
+                return;
+            }
+            
+            // Crear array con un solo reporte
+            exportarPDF([reporte]);
+        }
+
+        function verEstadisticasGenerales() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            
+            if (reportes.length === 0) {
+                alert('📊 ESTADÍSTICAS GENERALES\n\nNo hay reportes registrados aún.');
+                return;
+            }
+            
+            const totalAsistentes = reportes.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+            const totalAdultos = reportes.reduce((sum, r) => sum + parseInt(r.adultos || 0), 0);
+            const totalNinos = reportes.reduce((sum, r) => sum + parseInt(r.ninos || 0), 0);
+            
+            alert(`📊 ESTADÍSTICAS GENERALES\n\n` +
+                  `Total de Reportes: ${reportes.length}\n` +
+                  `Total Asistentes Acumulados: ${totalAsistentes}\n` +
+                  `Total Adultos: ${totalAdultos}\n` +
+                  `Total Niños: ${totalNinos}\n` +
+                  `Promedio por Evento: ${Math.round(totalAsistentes / reportes.length)}\n\n` +
+                  `📈 Próximamente: Gráficas detalladas y análisis avanzado`);
+        }
+
+        function exportarDatos() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            
+            if (reportes.length === 0) {
+                alert('No hay reportes para exportar');
+                return;
+            }
+
+            const opciones = prompt(
+                '📥 EXPORTAR REPORTES\n\n' +
+                'Seleccione el formato de exportación:\n\n' +
+                '1 - Exportar a Excel (CSV)\n' +
+                '2 - Exportar a PDF (Impresión)\n' +
+                '3 - Cancelar\n\n' +
+                'Ingrese el número de opción:'
+            );
+
+            if (opciones === '1') {
+                exportarExcel(reportes);
+            } else if (opciones === '2') {
+                exportarPDF(reportes);
+            }
+        }
+
+        function exportarExcel(reportes) {
+            // Crear contenido CSV
+            let csv = '\uFEFF'; // BOM para UTF-8
+            csv += 'REPORTE GENERAL DE ACTIVIDADES MISIONERAS\n';
+            csv += 'Fecha de Exportación,' + new Date().toLocaleDateString() + '\n';
+            csv += 'Total de Reportes,' + reportes.length + '\n\n';
+            
+            // Encabezados
+            csv += 'Fecha,Grupo,Misión,Líder,Tipo de Actividad,Adultos,Niños,Total Asistentes,';
+            csv += 'Actividad Realizada,Actividad Programada,Visitas Realizadas,Hermanos Enfermos,Observaciones,';
+            csv += 'Asistencia del Equipo\n';
+            
+            // Datos
+            reportes.forEach(reporte => {
+                const asistenciaTexto = Object.entries(reporte.asistencia || {})
+                    .map(([nombre, estado]) => {
+                        const emoji = estado === 'asistio' ? '✅' : estado === 'permiso' ? '📝' : '❌';
+                        return `${emoji} ${nombre}`;
+                    })
+                    .join('; ');
+                
+                csv += `"${reporte.fecha}",`;
+                csv += `"${reporte.grupo || 'N/A'}",`;
+                csv += `"${reporte.mision || 'N/A'}",`;
+                csv += `"${reporte.lider || 'N/A'}",`;
+                csv += `"${reporte.tipo || 'N/A'}",`;
+                csv += `${reporte.adultos || 0},`;
+                csv += `${reporte.ninos || 0},`;
+                csv += `${reporte.total || 0},`;
+                csv += `"${(reporte.actividadRealizada || 'N/A').replace(/"/g, '""')}",`;
+                csv += `"${(reporte.actividadProgramada || 'N/A').replace(/"/g, '""')}",`;
+                csv += `"${(reporte.visitasRealizadas || 'N/A').replace(/"/g, '""')}",`;
+                csv += `"${(reporte.hermanosEnfermos || 'N/A').replace(/"/g, '""')}",`;
+                csv += `"${(reporte.observaciones || 'N/A').replace(/"/g, '""')}",`;
+                csv += `"${asistenciaTexto}"\n`;
+            });
+            
+            // Agregar estadísticas al final
+            csv += '\n\nESTADÍSTICAS GENERALES\n';
+            const totalAsistentes = reportes.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+            const totalAdultos = reportes.reduce((sum, r) => sum + parseInt(r.adultos || 0), 0);
+            const totalNinos = reportes.reduce((sum, r) => sum + parseInt(r.ninos || 0), 0);
+            
+            csv += 'Total de Reportes,' + reportes.length + '\n';
+            csv += 'Total Asistentes Acumulados,' + totalAsistentes + '\n';
+            csv += 'Total Adultos,' + totalAdultos + '\n';
+            csv += 'Total Niños,' + totalNinos + '\n';
+            csv += 'Promedio por Evento,' + Math.round(totalAsistentes / reportes.length) + '\n';
+            
+            // Reportes por grupo
+            csv += '\nREPORTES POR GRUPO\n';
+            const grupos = ['Grupo N°1 El Sauce', 'Grupo N°2 El Pital', 'Grupo N°3 La Tekera'];
+            grupos.forEach(grupo => {
+                const count = reportes.filter(r => r.grupo === grupo).length;
+                const asistentesGrupo = reportes
+                    .filter(r => r.grupo === grupo)
+                    .reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+                csv += `${grupo},${count} reportes,${asistentesGrupo} asistentes\n`;
+            });
+            
+            // Descargar archivo
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            const fecha = new Date().toISOString().split('T')[0];
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Reporte_Misioneros_${fecha}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('✅ Archivo Excel exportado exitosamente!\n\nArchivo: Reporte_Misioneros_' + fecha + '.csv\n\nPuedes abrirlo con Microsoft Excel, Google Sheets o cualquier hoja de cálculo.');
+        }
+
+        function exportarPDF(reportes) {
+            // Crear ventana de impresión con formato profesional
+            const ventana = window.open('', '_blank');
+            const fecha = new Date().toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            const hora = new Date().toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const totalAsistentes = reportes.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
+            const totalAdultos = reportes.reduce((sum, r) => sum + parseInt(r.adultos || 0), 0);
+            const totalNinos = reportes.reduce((sum, r) => sum + parseInt(r.ninos || 0), 0);
+            const promedio = reportes.length > 0 ? Math.round(totalAsistentes / reportes.length) : 0;
+            
+            // Reportes por grupo
+            const reportesSauce = reportes.filter(r => r.grupo === 'Grupo N°1 El Sauce');
+            const reportesPital = reportes.filter(r => r.grupo === 'Grupo N°2 El Pital');
+            const reportesTekera = reportes.filter(r => r.grupo === 'Grupo N°3 La Tekera');
+            
+            let html = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de Actividades Misioneras - ${fecha}</title>
+    <style>
+        @media print {
+            @page { 
+                margin: 15mm;
+                size: A4;
+            }
+            body { margin: 0; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2c3e50;
+            line-height: 1.6;
+            background: white;
+        }
+        
+        .document {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        /* Portada */
+        .cover-page {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+        }
+        
+        .cover-page h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .cover-page h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .cover-info {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .cover-info p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        /* Header de páginas internas */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .page-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .page-header p {
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+        
+        /* Resumen ejecutivo */
+        .executive-summary {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .executive-summary h3 {
+            color: #667eea;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 3px solid #667eea;
+        }
+        
+        .stat-box .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .stat-box .label {
+            color: #7f8c8d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Gráficos por grupo */
+        .groups-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .group-box {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .group-box.sauce { border-top: 4px solid #11998e; }
+        .group-box.pital { border-top: 4px solid #ee0979; }
+        .group-box.tekera { border-top: 4px solid #4facfe; }
+        
+        .group-box h4 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .group-box .count {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        
+        .group-box .sublabel {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+        
+        /* Tabla de reportes */
+        .table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 13px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        /* Sección de detalles */
+        .section-title {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            margin: 30px 0 20px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+        }
+        
+        .reporte-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .reporte-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: -25px -25px 20px -25px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .reporte-header h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .reporte-header .meta {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .reporte-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .info-group {
+            margin-bottom: 15px;
+        }
+        
+        .info-group label {
+            display: block;
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .info-group .value {
+            color: #2c3e50;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .asistencia-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .asistencia-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #e9ecef;
+            color: #2c3e50;
+        }
+        
+        .asistencia-tag.presente {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .asistencia-tag.ausente {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .asistencia-tag.permiso {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 12px;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <div class="page-header">
+            <h2>📊 Informe de Actividades Misioneras</h2>
+            <p>Fecha de Generación: ${fecha} | Total de Reportes: ${reportes.length}</p>
+        </div>
+        
+        <div class="section-title">📝 Información Detallada de Cada Reporte</div>
+`;
+            
+            reportes.forEach((reporte, index) => {
+                const asistenciaPresente = [];
+                const asistenciaAusente = [];
+                const asistenciaPermiso = [];
+                
+                Object.entries(reporte.asistencia || {}).forEach(([nombre, estado]) => {
+                    if (estado === 'asistio') asistenciaPresente.push(nombre);
+                    else if (estado === 'falta') asistenciaAusente.push(nombre);
+                    else if (estado === 'permiso') asistenciaPermiso.push(nombre);
+                });
+                
+                html += `
+        <div class="reporte-card no-break">
+            <div class="reporte-header">
+                <h4>Reporte #${String(index + 1).padStart(3, '0')} - ${reporte.fecha}</h4>
+                <div class="meta">📍 Filial: ${reporte.mision || 'N/A'} | ${reporte.grupo} | Líder: ${reporte.lider}</div>
+            </div>
+            <div class="reporte-body">
+                <div class="info-group">
+                    <label>📋 Tipo de Actividad</label>
+                    <div class="value">${reporte.tipo || 'No especificado'}</div>
+                </div>
+                <div class="info-group">
+                    <label>📊 Total Asistentes</label>
+                    <div class="value" style="font-weight: 700; color: #667eea;">${reporte.total || 0} (${reporte.adultos || 0} adultos, ${reporte.ninos || 0} niños)</div>
+                </div>
+                <div class="info-group full-width">
+                    <label>✅ Actividad Realizada</label>
+                    <div class="value">${reporte.actividadRealizada || 'No especificada'}</div>
+                </div>
+                <div class="info-group full-width">
+                    <label>📆 Actividad Programada</label>
+                    <div class="value">${reporte.actividadProgramada || 'No especificada'}</div>
+                </div>
+                <div class="info-group">
+                    <label>🏠 Visitas</label>
+                    <div class="value">${reporte.visitasRealizadas || 'No registradas'}</div>
+                </div>
+                <div class="info-group">
+                    <label>🏥 Enfermos</label>
+                    <div class="value">${reporte.hermanosEnfermos || 'Ninguno'}</div>
+                </div>
+                <div class="info-group full-width">
+                    <label>📝 Observaciones</label>
+                    <div class="value">${reporte.observaciones || 'Sin observaciones'}</div>
+                </div>
+                
+                <!-- Asistencia del Equipo Compacta -->
+                <div class="info-group full-width" style="margin-top: 20px;">
+                    <label>👥 Asistencia del Equipo (${asistenciaPresente.length + asistenciaAusente.length + asistenciaPermiso.length} miembros)</label>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px;">
+                        <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 12px; border-radius: 5px;">
+                            <div style="font-weight: 700; color: #155724; margin-bottom: 8px;">✅ Asistieron (${asistenciaPresente.length})</div>
+                            <div style="font-size: 12px; color: #155724; line-height: 1.6;">
+                                ${asistenciaPresente.length > 0 ? asistenciaPresente.join('<br>') : '<em>Ninguno</em>'}
+                            </div>
+                        </div>
+                        <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px; border-radius: 5px;">
+                            <div style="font-weight: 700; color: #721c24; margin-bottom: 8px;">❌ No Asistieron (${asistenciaAusente.length})</div>
+                            <div style="font-size: 12px; color: #721c24; line-height: 1.6;">
+                                ${asistenciaAusente.length > 0 ? asistenciaAusente.join('<br>') : '<em>Ninguno</em>'}
+                            </div>
+                        </div>
+                        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 5px;">
+                            <div style="font-weight: 700; color: #856404; margin-bottom: 8px;">📝 Con Permiso (${asistenciaPermiso.length})</div>
+                            <div style="font-size: 12px; color: #856404; line-height: 1.6;">
+                                ${asistenciaPermiso.length > 0 ? asistenciaPermiso.join('<br>') : '<em>Ninguno</em>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+            });
+            
+            html += `
+        
+        <div class="footer">
+            <p><strong>Sistema de Gestión de Reportes Misioneros</strong></p>
+            <p>Generado automáticamente el ${fecha} a las ${hora}</p>
+            <p>Total de páginas: ${Math.ceil(reportes.length / 3) + 3} | Total de reportes: ${reportes.length}</p>
+        </div>
+    </div>
+</body>
+</html>`;
+            
+            ventana.document.write(html);
+            ventana.document.close();
+            
+            // Esperar a que cargue y luego imprimir
+            setTimeout(() => {
+                ventana.print();
+            }, 800);
+            
+            alert('✅ Informe PDF Profesional Generado!\n\n' +
+                  '📄 Contenido del informe:\n' +
+                  '• Portada corporativa\n' +
+                  '• Resumen ejecutivo con estadísticas\n' +
+                  '• Análisis por grupo\n' +
+                  '• Tabla consolidada\n' +
+                  '• Detalles completos de cada reporte\n\n' +
+                  '💡 En la ventana de impresión:\n' +
+                  '• Selecciona "Guardar como PDF"\n' +
+                  '• O imprime directamente');
+        }
+
+        function configuracion() {
+            alert('⚙️ CONFIGURACIÓN\n\nPróximamente podrás:\n• Gestionar usuarios\n• Configurar permisos\n• Personalizar el sistema\n• Ajustar notificaciones');
+        }
+
+        function reiniciarSistema() {
+            const confirmacion1 = confirm(
+                '⚠️ ADVERTENCIA: REINICIO DEL SISTEMA\n\n' +
+                'Esta acción eliminará PERMANENTEMENTE:\n\n' +
+                '❌ Todos los reportes guardados\n' +
+                '❌ Todas las estadísticas acumuladas\n' +
+                '❌ Todo el historial de asistencia\n\n' +
+                '¿Estás seguro que deseas continuar?'
+            );
+            
+            if (!confirmacion1) return;
+            
+            const confirmacion2 = prompt(
+                'Para confirmar el reinicio, escribe exactamente:\nELIMINAR TODOS LOS DATOS\n\n(Distingue mayúsculas y minúsculas)'
+            );
+            
+            if (confirmacion2 === 'ELIMINAR TODOS LOS DATOS') {
+                // Limpiar todos los datos del localStorage
+                localStorage.removeItem('reportes');
+                
+                alert(
+                    '✅ SISTEMA REINICIADO\n\n' +
+                    'Todos los datos han sido eliminados exitosamente.\n\n' +
+                    'El sistema se recargará ahora...'
+                );
+                
+                // Recargar la página para reflejar los cambios
+                location.reload();
+            } else {
+                alert('❌ Reinicio cancelado\n\nLa frase de confirmación no coincide.\nNo se eliminó ningún dato.');
+            }
+        }
+
+        // Cargar datos al iniciar
+        cargarEquipos();
+        cargarControlAsistencia();
+        cargarEstadisticas();
+        cargarDetalleGrupos();
+    </script>
+</body>
+</html>

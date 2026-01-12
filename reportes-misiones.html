@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Misiones - Sistema Misionero</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>📍 Reportes de Misiones</h1>
+            <div class="user-info">
+                <span class="user-name" id="userName"></span>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Sección de introducción -->
+            <div class="mission-intro">
+                <h2>🌍 Nuestras Misiones</h2>
+                <p>
+                    El ministerio misionero de nuestra iglesia central alcanza a comunidades necesitadas 
+                    llevando el mensaje de esperanza y amor. A través de nuestras tres misiones principales: 
+                    El Sauce, El Pital y La Tekera, impactamos vidas y transformamos corazones. 
+                    Cada misión es un faro de luz en su comunidad, trabajando incansablemente para servir, 
+                    evangelizar y edificar el Reino de Dios.
+                </p>
+            </div>
+
+            <!-- Tarjetas de misiones -->
+            <div class="missions-grid">
+                <!-- Misión El Sauce -->
+                <div class="mission-card sauce" onclick="verReportes('sauce')">
+                    <div class="mission-logo">
+                        <img src="logo/El Sauce.png" alt="El Sauce" class="logo-img">
+                    </div>
+                    <h3>El Sauce</h3>
+                    <p>
+                        Comunidad agrícola dedicada al servicio y evangelización. 
+                        Una misión comprometida con el crecimiento espiritual de sus habitantes.
+                    </p>
+                    <button class="btn-view-reports">Ver Reportes</button>
+                </div>
+
+                <!-- Misión El Pital -->
+                <div class="mission-card pital" onclick="verReportes('pital')">
+                    <div class="mission-logo">
+                        <img src="logo/El Pital.png" alt="El Pital" class="logo-img">
+                    </div>
+                    <h3>El Pital</h3>
+                    <p>
+                        Ubicada en zona montañosa, esta misión alcanza a familias rurales 
+                        con el mensaje de salvación y esperanza.
+                    </p>
+                    <button class="btn-view-reports">Ver Reportes</button>
+                </div>
+
+                <!-- Misión La Tekera -->
+                <div class="mission-card tekera" onclick="verReportes('tekera')">
+                    <div class="mission-logo">
+                        <img src="logo/La Tekera.png" alt="La Tekera" class="logo-img">
+                    </div>
+                    <h3>La Tekera</h3>
+                    <p>
+                        Misión urbana enfocada en alcanzar nuevas generaciones 
+                        y fortalecer familias a través de la Palabra de Dios.
+                    </p>
+                    <button class="btn-view-reports">Ver Reportes</button>
+                </div>
+            </div>
+
+            <!-- Información de la iglesia central -->
+            <div class="mission-intro" style="margin-top: 50px; background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);">
+                <img src="logo/Central.png" alt="Iglesia Central" style="max-width: 150px; height: auto; margin-bottom: 20px;">
+                <h2>⛪ Iglesia Central</h2>
+                <p>
+                    Nuestra iglesia principal coordina y apoya todas las misiones, 
+                    proporcionando recursos, capacitación y cobertura espiritual. 
+                    Juntos formamos una red de fe que transforma comunidades y vidas.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Verificar sesión al cargar la página
+        if (!verificarSesion()) {
+            window.location.href = 'index.html';
+        }
+        
+        // Mostrar nombre del usuario
+        const usuario = obtenerUsuarioActual();
+        document.getElementById('userName').textContent = usuario.nombre;
+
+        // Función para ver reportes de una misión específica
+        function verReportes(mision) {
+            // Guardar la misión seleccionada (filial a visitar)
+            sessionStorage.setItem('misionSeleccionada', mision);
+            // Ir a la página de reportes
+            window.location.href = 'reporte-grupo.html';
+        }
+    </script>
+</body>
+</html>

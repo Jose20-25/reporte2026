@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Tekera - Grupo N°3 Damaris de Nolasco</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🏘️ Misión La Tekera - Grupo N°3</h1>
+            <div class="user-info">
+                <span class="user-name" id="userName"></span>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Información del Grupo -->
+            <div class="group-header">
+                <div class="group-logo">
+                    <img src="../logo/La Tekera.png" alt="La Tekera" class="group-logo-img">
+                </div>
+                <div class="group-info">
+                    <h2>Grupo N°3 - La Tekera</h2>
+                    <div class="leader-info">
+                        <h3>👩‍💼 Líder del Grupo</h3>
+                        <p class="leader-name">Damaris de Nolasco</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipo de Auxiliares -->
+            <div class="section">
+                <h3 class="section-title">👥 Equipo de Auxiliares</h3>
+                <div class="auxiliares-grid">
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👨</div>
+                        <p class="auxiliar-name">Joselito Nolasco</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👨</div>
+                        <p class="auxiliar-name">Anthony Nolasco</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👧</div>
+                        <p class="auxiliar-name">Ariadna Nolasco</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👨</div>
+                        <p class="auxiliar-name">Antonio Mayora</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👨</div>
+                        <p class="auxiliar-name">Kevin Rodriguez</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👩</div>
+                        <p class="auxiliar-name">Vanessa de Rodriguez</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👨</div>
+                        <p class="auxiliar-name">Moises Rodriguez</p>
+                    </div>
+                    <div class="auxiliar-card">
+                        <div class="auxiliar-icon">👧</div>
+                        <p class="auxiliar-name">Hazel Rodriguez</p>
+                    </div>
+                </div>
+                <div class="team-summary">
+                    <p><strong>Total de Auxiliares:</strong> 8 miembros</p>
+                </div>
+            </div>
+
+            <!-- Sección de Reportes -->
+            <div class="section">
+                <h3 class="section-title">📊 Reportes y Actividades</h3>
+                <div class="reports-container">
+                    <div class="report-actions">
+                        <button class="btn-action" onclick="crearReporte()">
+                            <span class="btn-icon">➕</span>
+                            Crear Nuevo Reporte
+                        </button>
+                        <button class="btn-action secondary" onclick="verEstadisticas()">
+                            <span class="btn-icon">📈</span>
+                            Ver Estadísticas
+                        </button>
+                        <button class="btn-action secondary" onclick="verHistorial()">
+                            <span class="btn-icon">📋</span>
+                            Historial de Reportes
+                        </button>
+                    </div>
+
+                    <!-- Tabla de reportes recientes -->
+                    <div class="reports-table-container">
+                        <h4>Reportes Recientes</h4>
+                        <table class="reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo de Actividad</th>
+                                    <th>Asistencia</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="no-data">
+                                    <td colspan="5">
+                                        <p style="text-align: center; padding: 30px; color: #999;">
+                                            No hay reportes registrados aún.<br>
+                                            <small>Haz clic en "Crear Nuevo Reporte" para comenzar.</small>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de regreso -->
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn-back" onclick="volverAtras()">
+                    ← Volver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Verificar sesión al cargar la página
+        if (!verificarSesion()) {
+            window.location.href = 'index.html';
+        }
+        
+        // Mostrar nombre del usuario
+        const usuario = obtenerUsuarioActual();
+        document.getElementById('userName').textContent = usuario.nombre;
+
+        // Función para volver según el rol
+        function volverAtras() {
+            if (usuario.rol === 'administrador') {
+                window.location.href = 'dashboard-admin.html';
+            } else {
+                window.location.href = 'reportes-misiones.html';
+            }
+        }
+
+        // Funciones de acciones
+        function crearReporte() {
+            alert('Próximamente: Formulario para crear nuevo reporte\n\nPodrás registrar:\n• Fecha y hora\n• Tipo de actividad\n• Número de asistentes\n• Observaciones\n• Testimonios');
+        }
+
+        function verEstadisticas() {
+            alert('Próximamente: Estadísticas del Grupo N°3\n\n• Gráficas de asistencia\n• Actividades realizadas\n• Crecimiento del grupo\n• Metas alcanzadas');
+        }
+
+        function verHistorial() {
+            alert('Próximamente: Historial completo de reportes\n\nPodrás filtrar por:\n• Fecha\n• Tipo de actividad\n• Responsable\n• Estado');
+        }
+    </script>
+</body>
+</html>

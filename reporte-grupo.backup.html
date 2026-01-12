@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Grupo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1 id="headerTitle">📍 Reporte de Grupo</h1>
+            <div class="user-info">
+                <span class="user-name" id="userName"></span>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Información del Grupo -->
+            <div class="group-header">
+                <div class="group-logo">
+                    <img id="grupoLogo" src="" alt="Logo" class="group-logo-img">
+                </div>
+                <div class="group-info">
+                    <h2 id="grupoTitulo"></h2>
+                    <div class="leader-info">
+                        <h3 id="liderIcon">👨‍💼 Líder del Grupo</h3>
+                        <p class="leader-name" id="liderNombre"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipo de Auxiliares -->
+            <div class="section">
+                <h3 class="section-title">👥 Equipo de Auxiliares</h3>
+                <div class="auxiliares-grid" id="auxiliaresGrid">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+                <div class="team-summary">
+                    <p><strong>Total de Auxiliares:</strong> <span id="totalAuxiliares">0</span> miembros</p>
+                </div>
+            </div>
+
+            <!-- Sección de Reportes -->
+            <div class="section">
+                <h3 class="section-title">📊 Reportes y Actividades</h3>
+                <div class="reports-container">
+                    <div class="report-actions">
+                        <button class="btn-action" onclick="toggleFormularioReporte()">
+                            <span class="btn-icon">➕</span>
+                            Crear Nuevo Reporte
+                        </button>
+                        <button class="btn-action secondary" onclick="verEstadisticas()">
+                            <span class="btn-icon">📈</span>
+                            Ver Estadísticas
+                        </button>
+                        <button class="btn-action secondary" onclick="verHistorial()">
+                            <span class="btn-icon">📋</span>
+                            Historial de Reportes
+                        </button>
+                    </div>
+
+                    <!-- Formulario de Nuevo Reporte (oculto inicialmente) -->
+                    <div id="formularioReporte" class="formulario-reporte" style="display: none;">
+                        <h4>📝 Nuevo Reporte de Actividad</h4>
+                        <form id="formReporte" onsubmit="return guardarReporte(event)">
+                            
+                            <!-- Información General -->
+                            <div class="seccion-formulario">
+                                <h5>📋 Información General</h5>
+                                <div class="form-row">
+                                    <div class="form-field">
+                                        <label>Fecha</label>
+                                        <input type="date" id="fechaActividad" required readonly style="background: #f8f9fa;">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Líder del Grupo</label>
+                                        <input type="text" id="liderGrupo" readonly style="background: #f8f9fa; font-weight: 600;">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Tipo de Actividad</label>
+                                        <select id="tipoActividad" required>
+                                            <option value="">Seleccionar...</option>
+                                            <option value="Culto Regular">Culto Regular</option>
+                                            <option value="Evangelismo">Evangelismo</option>
+                                            <option value="Visitación">Visitación</option>
+                                            <option value="Estudio Bíblico">Estudio Bíblico</option>
+                                            <option value="Reunión de Oración">Reunión de Oración</option>
+                                            <option value="Actividad Especial">Actividad Especial</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conteo de Asistencia -->
+                            <div class="seccion-formulario">
+                                <h5>👥 Conteo de Asistencia General</h5>
+                                <div class="form-row">
+                                    <div class="form-field">
+                                        <label>👨‍👩‍👧‍👦 Cantidad de Adultos</label>
+                                        <input type="number" id="cantidadAdultos" min="0" value="0" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label>👶 Cantidad de Niños</label>
+                                        <input type="number" id="cantidadNinos" min="0" value="0" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label><strong>📊 Total Asistentes</strong></label>
+                                        <input type="number" id="totalAsistentes" readonly style="background: #e8f5e9; font-weight: bold; font-size: 18px; color: #28a745;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabla de Asistencia del Equipo -->
+                            <div class="seccion-formulario">
+                                <h5>✅ Asistencia del Equipo de Auxiliares</h5>
+                                <div class="tabla-asistencia-wrapper">
+                                    <table class="tabla-asistencia">
+                                        <thead>
+                                            <tr>
+                                                <th>Auxiliar</th>
+                                                <th>Asistió</th>
+                                                <th>No Asistió</th>
+                                                <th>Permiso</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tablaAsistenciaBody">
+                                            <!-- Se llenará dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Observaciones -->
+                            <div class="seccion-formulario">
+                                <h5>📝 Observaciones</h5>
+                                <div class="form-field">
+                                    <textarea id="observaciones" rows="4" placeholder="Detalles adicionales de la actividad, testimonios, novedades..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-guardar">💾 Guardar Reporte</button>
+                                <button type="button" class="btn-cancelar" onclick="toggleFormularioReporte()">❌ Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tabla de reportes recientes -->
+                    <div class="reports-table-container">
+                        <h4>Reportes Recientes</h4>
+                        <table class="reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo de Actividad</th>
+                                    <th>Adultos</th>
+                                    <th>Niños</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaReportes">
+                                <tr class="no-data">
+                                    <td colspan="7">
+                                        <p style="text-align: center; padding: 30px; color: #999;">
+                                            No hay reportes registrados aún.<br>
+                                            <small>Haz clic en "Crear Nuevo Reporte" para comenzar.</small>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de regreso -->
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn-back" onclick="volverAtras()">
+                    ← Volver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="grupos-data.js"></script>
+    <script>
+        // Verificar sesión al cargar la página
+        if (!verificarSesion()) {
+            window.location.href = 'index.html';
+        }
+        
+        // Mostrar nombre del usuario
+        const usuario = obtenerUsuarioActual();
+        document.getElementById('userName').textContent = usuario.nombre;
+
+        // Cargar datos del grupo según el usuario
+        const grupoAsignado = usuario.grupoAsignado;
+        const datosGrupo = GRUPOS_DATA[grupoAsignado];
+
+        if (datosGrupo) {
+            // Actualizar título y logo
+            document.getElementById('headerTitle').innerHTML = datosGrupo.emoji + ' ' + datosGrupo.mision + ' - ' + datosGrupo.nombre;
+            document.getElementById('grupoTitulo').textContent = datosGrupo.nombre + ' - ' + datosGrupo.mision;
+            document.getElementById('grupoLogo').src = datosGrupo.logo;
+            document.getElementById('liderIcon').innerHTML = datosGrupo.liderIcono + ' Líder del Grupo';
+            document.getElementById('liderNombre').textContent = datosGrupo.lider;
+
+            // Cargar auxiliares
+            const auxiliaresGrid = document.getElementById('auxiliaresGrid');
+            auxiliaresGrid.innerHTML = '';
+            
+            datosGrupo.auxiliares.forEach(auxiliar => {
+                const card = document.createElement('div');
+                card.className = 'auxiliar-card';
+                card.innerHTML = `
+                    <div class="auxiliar-icon">${auxiliar.icono}</div>
+                    <p class="auxiliar-name">${auxiliar.nombre}</p>
+                `;
+                auxiliaresGrid.appendChild(card);
+            });
+
+            document.getElementById('totalAuxiliares').textContent = datosGrupo.auxiliares.length;
+
+            // Cargar lista de asistencia
+            cargarListaAsistencia();
+        }
+
+        // Calcular total automáticamente
+        document.getElementById('cantidadAdultos').addEventListener('input', calcularTotal);
+        document.getElementById('cantidadNinos').addEventListener('input', calcularTotal);
+
+        function calcularTotal() {
+            const adultos = parseInt(document.getElementById('cantidadAdultos').value) || 0;
+            const ninos = parseInt(document.getElementById('cantidadNinos').value) || 0;
+            documverEstadisticas() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportesGrupo = reportes.filter(r => 
+                r.grupo === datosGrupo.nombre && r.mision === datosGrupo.mision
+            );
+
+            const totalReportes = reportesGrupo.length;
+            const totalAsistentes = reportesGrupo.reduce((sum, r) => sum + parseInt(r.total), 0);
+            const promedio = totalReportes > 0 ? Math.round(totalAsistentes / totalReportes) : 0;
+
+            alert(`📈 ESTADÍSTICAS - ${datosGrupo.nombre}\n\n` +
+                  `Total de Reportes: ${totalReportes}\n` +
+                  `Total de Asistentes (acumulado): ${totalAsistentes}\n` +
+                  `Promedio de Asistencia: ${promedio} personas\n\n` +
+                  `📊 Próximamente: Gráficas detalladas`);
+        }
+
+        function verHistorial() {
+            alert('📋 Historial completo de reportes\n\nPróximamente podrás:\n• Filtrar por fecha\n• Buscar por tipo de actividad\n• Exportar reportes\n• Ver tendencias
+                item.innerHTML = `
+                    <span class="auxiliar-nombre-asistencia">${auxiliar.icono} ${auxiliar.nombre}</span>
+                    <div class="asistencia-opciones">
+                        <label class="radio-option asistio">
+                            <input type="radio" name="asistencia_${index}" value="asistio" checked>
+                            <span>✅ Asistió</span>
+                        </label>
+                        <label class="radio-option falta">
+                            <input type="radio" name="asistencia_${index}" value="falta">
+                            <span>❌ No Asistió</span>
+                        </label>
+                        <label class="radio-option permiso">
+                            <input type="radio" name="asistencia_${index}" value="permiso">
+                            <span>📝 Permiso</span>
+                        </label>
+                    </div>
+                `;
+                listaAsistencia.appendChild(item);
+            });
+        }
+
+        function toggleFormularioReporte() {
+            const formulario = document.getElementById('formularioReporte');
+            if (formulario.style.display === 'none') {
+                formulario.style.display = 'block';
+                document.getElementById('fechaActividad').valueAsDate = new Date();
+                calcularTotal();
+            } else {
+                formulario.style.display = 'none';
+                document.getElementById('formReporte').reset();
+            }
+        }
+
+        function guardarReporte(event) {
+            event.preventDefault();
+
+            // Recopilar datos del formulario
+            const fecha = document.getElementById('fechaActividad').value;
+            const tipo = document.getElementById('tipoActividad').value;
+            const adultos = document.getElementById('cantidadAdultos').value;
+            const ninos = document.getElementById('cantidadNinos').value;
+            const total = document.getElementById('totalAsistentes').value;
+            const observaciones = document.getElementById('observaciones').value;
+
+            // Recopilar asistencia
+            const asistencia = {};
+            datosGrupo.auxiliares.forEach((auxiliar, index) => {
+                const seleccion = document.querySelector(`input[name="asistencia_${index}"]:checked`);
+                asistencia[auxiliar.nombre] = seleccion ? seleccion.value : 'asistio';
+            });
+
+            // Crear objeto de reporte
+            const reporte = {
+                fecha,
+                tipo,
+                adultos,
+                ninos,
+                total,
+                observaciones,
+                asistencia,
+                grupo: datosGrupo.nombre,
+                mision: datosGrupo.mision,
+                lider: datosGrupo.lider,
+                fechaCreacion: new Date().toISOString()
+            };
+
+            // Guardar en localStorage
+            let reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            reportes.unshift(reporte);
+            localStorage.setItem('reportes', JSON.stringify(reportes));
+
+            // Mostrar confirmación
+            alert('✅ Reporte guardado exitosamente!\n\nFecha: ' + fecha + '\nTipo: ' + tipo + '\nTotal Asistentes: ' + total);
+
+            // Limpiar formulario y ocultarlo
+            toggleFormularioReporte();
+
+            // Recargar tabla
+            cargarReportes();
+        }
+
+        function cargarReportes() {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const tbody = document.getElementById('tablaReportes');
+            
+            // Filtrar reportes del grupo actual
+            const reportesGrupo = reportes.filter(r => 
+                r.grupo === datosGrupo.nombre && r.mision === datosGrupo.mision
+            );
+
+            if (reportesGrupo.length === 0) {
+                tbody.innerHTML = `
+                    <tr class="no-data">
+                        <td colspan="7">
+                            <p style="text-align: center; padding: 30px; color: #999;">
+                                No hay reportes registrados aún.<br>
+                                <small>Haz clic en "Crear Nuevo Reporte" para comenzar.</small>
+                            </p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            reportesGrupo.slice(0, 10).forEach((reporte, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reporte.fecha}</td>
+                    <td>${reporte.tipo}</td>
+                    <td>${reporte.adultos}</td>
+                    <td>${reporte.ninos}</td>
+                    <td><strong>${reporte.total}</strong></td>
+                    <td><span class="badge-activo">Registrado</span></td>
+                    <td>
+                        <button class="btn-small" onclick="verDetalleReporte(${index})">👁️ Ver</button>
+                        <button class="btn-small danger" onclick="eliminarReporte(${index})">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function verDetalleReporte(index) {
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportesGrupo = reportes.filter(r => 
+                r.grupo === datosGrupo.nombre && r.mision === datosGrupo.mision
+            );
+            const reporte = reportesGrupo[index];
+
+            let asistenciaTexto = '\n\n📋 ASISTENCIA DE AUXILIARES:\n';
+            for (const [nombre, estado] of Object.entries(reporte.asistencia)) {
+                const emoji = estado === 'asistio' ? '✅' : estado === 'permiso' ? '📝' : '❌';
+                asistenciaTexto += `${emoji} ${nombre}\n`;
+            }
+
+            alert(`📊 DETALLE DEL REPORTE\n\n` +
+                  `Fecha: ${reporte.fecha}\n` +
+                  `Tipo: ${reporte.tipo}\n` +
+                  `Adultos: ${reporte.adultos}\n` +
+                  `Niños: ${reporte.ninos}\n` +
+                  `Total: ${reporte.total}\n` +
+                  `Observaciones: ${reporte.observaciones || 'Sin observaciones'}` +
+                  asistenciaTexto);
+        }
+
+        function eliminarReporte(index) {
+            if (!confirm('¿Estás seguro de eliminar este reporte?')) return;
+
+            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportesGrupo = reportes.filter(r => 
+                r.grupo === datosGrupo.nombre && r.mision === datosGrupo.mision
+            );
+            const reporteAEliminar = reportesGrupo[index];
+
+            const todosReportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const indexGlobal = todosReportes.findIndex(r => 
+                r.fechaCreacion === reporteAEliminar.fechaCreacion
+            );
+
+            if (indexGlobal > -1) {
+                todosReportes.splice(indexGlobal, 1);
+                localStorage.setItem('reportes', JSON.stringify(todosReportes));
+                cargarReportes();
+                alert('✅ Reporte eliminado');
+            }
+        }
+
+        // Cargar reportes al iniciar
+        cargarReportes();
+
+        // Función para volver según el rol
+        function volverAtras() {
+            if (usuario.rol === 'administrador') {
+                window.location.href = 'dashboard-admin.html';
+            } else {
+                window.location.href = 'reportes-misiones.html';
+            }
+        }
+
+        // Funciones de acciones
+        function crearReporte() {
+            alert('Próximamente: Formulario para crear nuevo reporte\n\nPodrás registrar:\n• Fecha y hora\n• Tipo de actividad\n• Número de asistentes\n• Observaciones\n• Testimonios');
+        }
+
+        function verEstadisticas() {
+            alert('Próximamente: Estadísticas del ' + datosGrupo.nombre + '\n\n• Gráficas de asistencia\n• Actividades realizadas\n• Crecimiento del grupo\n• Metas alcanzadas');
+        }
+
+        function verHistorial() {
+            alert('Próximamente: Historial completo de reportes\n\nPodrás filtrar por:\n• Fecha\n• Tipo de actividad\n• Responsable\n• Estado');
+        }
+    </script>
+</body>
+</html>
