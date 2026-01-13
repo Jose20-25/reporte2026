@@ -1249,7 +1249,292 @@ body {
     font-size: 14px;
 }
 
-/* Responsive */
+/* ===============================================
+   ESTILOS RESPONSIVE PARA TODOS LOS DISPOSITIVOS
+   =============================================== */
+
+/* Configuración base para móviles */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 10px;
+    }
+    
+    .login-box {
+        padding: 25px 20px;
+    }
+    
+    .logo-container h1 {
+        font-size: 20px;
+    }
+    
+    .btn-login {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    /* Dashboard móvil */
+    .dashboard {
+        padding: 10px;
+    }
+    
+    .header {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .header-left img {
+        height: 35px !important;
+    }
+    
+    .header-left h1 {
+        font-size: 18px;
+    }
+    
+    .header-subtitle {
+        font-size: 11px;
+    }
+    
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .user-name {
+        font-size: 12px;
+    }
+    
+    .btn-logout {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    /* Content móvil */
+    .content {
+        padding: 10px;
+    }
+    
+    .section-title {
+        font-size: 16px;
+    }
+    
+    /* Stats grid móvil */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-value {
+        font-size: 28px;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+    }
+    
+    /* Misiones grid móvil */
+    .missions-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .mission-card {
+        padding: 20px;
+    }
+    
+    .mission-card h3 {
+        font-size: 18px;
+    }
+    
+    .mission-card p {
+        font-size: 13px;
+    }
+    
+    /* Grupos grid móvil */
+    .admin-groups-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .group-card {
+        padding: 15px;
+    }
+    
+    /* Formularios móvil */
+    .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 15px;
+    }
+    
+    .form-field label {
+        font-size: 13px;
+    }
+    
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    /* Tablas móvil - Hacerlas scrollables */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 600px;
+        font-size: 12px;
+    }
+    
+    table th,
+    table td {
+        padding: 8px;
+        white-space: nowrap;
+    }
+    
+    /* Botones móvil */
+    .btn-action,
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .action-btn {
+        padding: 15px;
+    }
+    
+    .action-icon {
+        font-size: 30px;
+    }
+    
+    /* Auxiliares grid móvil */
+    .auxiliares-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .auxiliar-card {
+        padding: 10px;
+    }
+    
+    .auxiliar-name {
+        font-size: 12px;
+    }
+    
+    /* Lista de asistencia móvil */
+    .asistencia-list {
+        gap: 10px;
+    }
+    
+    .asistencia-item {
+        padding: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .asistencia-opciones {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    /* Resumen columnas móvil */
+    .resumen-columnas {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .columna-resumen {
+        padding: 12px;
+    }
+}
+
+/* Tablets y pantallas medianas */
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .login-box {
+        padding: 35px;
+    }
+    
+    .dashboard {
+        padding: 15px;
+    }
+    
+    .header {
+        padding: 20px;
+    }
+    
+    .header-left h1 {
+        font-size: 22px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .missions-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .admin-groups-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .auxiliares-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Tablas en tablet */
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    table {
+        font-size: 13px;
+    }
+}
+
+/* Responsive general */
 @media (max-width: 768px) {
     .header-left {
         flex-direction: column;
@@ -1266,5 +1551,162 @@ body {
     
     .quick-actions-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .missions-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .admin-groups-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .auxiliares-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* Mejoras táctiles para móvil */
+@media (hover: none) and (pointer: coarse) {
+    /* Botones más grandes para táctil */
+    button,
+    .btn-action,
+    .btn-login,
+    .btn-logout,
+    .btn-primary,
+    .btn-secondary,
+    .btn-view-reports {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 12px 20px;
+    }
+    
+    /* Inputs más grandes */
+    input,
+    select,
+    textarea {
+        min-height: 44px;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+    
+    /* Radio buttons y checkboxes más grandes */
+    input[type="radio"],
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* Enlaces más grandes */
+    a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+/* Orientación horizontal en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header {
+        padding: 10px 15px;
+    }
+    
+    .header-left h1 {
+        font-size: 18px;
+    }
+    
+    .content {
+        padding: 10px;
+    }
+    
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+}
+
+/* Accesibilidad - Alto contraste */
+@media (prefers-contrast: high) {
+    body {
+        background: #000;
+    }
+    
+    .login-box,
+    .dashboard,
+    .mission-card,
+    .group-card {
+        border: 2px solid #fff;
+    }
+    
+    button {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    .login-box {
+        background: #1f1f1f;
+        color: #e0e0e0;
+    }
+    
+    .dashboard {
+        background: #1a1a1a;
+        color: #e0e0e0;
+    }
+    
+    input,
+    select,
+    textarea {
+        background: #2a2a2a;
+        color: #e0e0e0;
+        border-color: #444;
+    }
+    
+    table {
+        background: #1f1f1f;
+        color: #e0e0e0;
+    }
+    
+    table th {
+        background: #2a2a2a;
+    }
+}
+
+/* Print styles */
+@media print {
+    .header,
+    .btn-logout,
+    .quick-actions-grid,
+    button {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+    }
+    
+    .dashboard,
+    .content {
+        padding: 0;
+        background: white;
+    }
+    
+    table {
+        page-break-inside: avoid;
     }
 }
