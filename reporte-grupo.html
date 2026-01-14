@@ -400,7 +400,7 @@
             }
         }
 
-        async function guardarReporte(event) {
+        function guardarReporte(event) {
             event.preventDefault();
 
             const fecha = document.getElementById('fechaActividad').value;
@@ -444,41 +444,29 @@
                 fechaCreacion: new Date().toISOString()
             };
 
-            try {
-                // Mostrar mensaje de guardado
-                const btnSubmit = event.target.querySelector('button[type="submit"]');
-                const textoOriginal = btnSubmit.textContent;
-                btnSubmit.textContent = '⏳ Guardando...';
-                btnSubmit.disabled = true;
-                
-                // Guardar en Firebase
-                await window.guardarReporteFirebase(reporte);
-                
-                // También guardar en localStorage como backup
-                let reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
-                reportes.unshift(reporte);
-                localStorage.setItem('reportes', JSON.stringify(reportes));
-                
-                // Restaurar botón
-                btnSubmit.textContent = textoOriginal;
-                btnSubmit.disabled = false;
-
-                alert('✅ Reporte guardado exitosamente en Firebase!\n\nFecha: ' + fecha + '\nTipo: ' + tipo + '\nTotal Asistentes: ' + total + '\n\n✨ El reporte estará disponible en todos los dispositivos.');
-
-                toggleFormularioReporte();
-                cargarReportes();
-            } catch (error) {
-                console.error('Error al guardar en Firebase:', error);
-                
-                // Fallback a localStorage
-                let reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
-                reportes.unshift(reporte);
-                localStorage.setItem('reportes', JSON.stringify(reportes));
-                
-                alert('⚠️ Reporte guardado localmente\n\nNo se pudo conectar a Firebase, pero el reporte se guardó en este dispositivo.\n\nFecha: ' + fecha + '\nTipo: ' + tipo + '\nTotal Asistentes: ' + total);
-                
-                toggleFormularioReporte();
-                cargarReportes();
+            // 1. Guardar INMEDIATAMENTE en localStorage (sin esperar)
+            let reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            reportes.unshift(reporte);
+            localStorage.setItem('reportes', JSON.stringify(reportes));
+            
+            // 2. Mostrar confirmación INMEDIATA al usuario
+            alert('✅ Reporte guardado exitosamente!\n\nFecha: ' + fecha + '\nTipo: ' + tipo + '\nTotal Asistentes: ' + total + '\n\n🔄 Sincronizando con Firebase...');
+            
+            // 3. Cerrar formulario y actualizar vista
+            toggleFormularioReporte();
+            cargarReportes();
+            
+            // 4. Guardar en Firebase en SEGUNDO PLANO (sin bloquear)
+            if (window.guardarReporteFirebase) {
+                window.guardarReporteFirebase(reporte)
+                    .then(() => {
+                        console.log('✅ Reporte sincronizado con Firebase exitosamente');
+                    })
+                    .catch((error) => {
+                        console.warn('⚠️ No se pudo sincronizar con Firebase (se guardó localmente):', error);
+                    });
+            } else {
+                console.log('ℹ️ Reporte guardado solo localmente (Firebase no disponible)');
             }
         }
 
