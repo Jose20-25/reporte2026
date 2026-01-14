@@ -188,6 +188,13 @@
                             <small>Ver análisis completo</small>
                         </span>
                     </button>
+                    <button class="action-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" onclick="sincronizarDatosManual()">
+                        <span class="action-icon">🔄</span>
+                        <span class="action-text">
+                            <strong>Sincronizar Datos</strong>
+                            <small>Recargar desde Firebase</small>
+                        </span>
+                    </button>
                     <button class="action-btn action-info" onclick="exportarDatos()">
                         <span class="action-icon">📥</span>
                         <span class="action-text">
@@ -277,6 +284,48 @@
         </div>
     </div>
 
+    <script type="module">
+        // Importar funciones de Firebase
+        import { obtenerReportesFirebase, eliminarTodosLosReportesFirebase } from './firebase-config.js';
+        
+        // Variable global para almacenar reportes
+        window.reportesGlobales = [];
+        window.eliminarTodosLosReportesFirebase = eliminarTodosLosReportesFirebase;
+        
+        // Función para cargar reportes desde Firebase
+        async function cargarReportesDesdeFirebase() {
+            try {
+                console.log('🔄 Cargando reportes desde Firebase...');
+                const reportesFirebase = await obtenerReportesFirebase();
+                window.reportesGlobales = reportesFirebase;
+                
+                // Sincronizar con localStorage como backup
+                localStorage.setItem('reportes', JSON.stringify(reportesFirebase));
+                
+                console.log(`✅ ${reportesFirebase.length} reportes cargados desde Firebase`);
+                
+                // Actualizar la interfaz
+                if (typeof cargarEstadisticas === 'function') cargarEstadisticas();
+                if (typeof cargarControlAsistencia === 'function') cargarControlAsistencia();
+                if (typeof cargarDetalleGrupos === 'function') cargarDetalleGrupos();
+                
+                return reportesFirebase;
+            } catch (error) {
+                console.error('❌ Error al cargar desde Firebase:', error);
+                // Fallback a localStorage
+                const reportesLocal = JSON.parse(localStorage.getItem('reportes') || '[]');
+                window.reportesGlobales = reportesLocal;
+                console.log(`⚠️ Usando ${reportesLocal.length} reportes desde localStorage`);
+                return reportesLocal;
+            }
+        }
+        
+        // Exponer función globalmente
+        window.cargarReportesDesdeFirebase = cargarReportesDesdeFirebase;
+        
+        // Cargar reportes al iniciar
+        cargarReportesDesdeFirebase();
+    </script>
     <script src="auth.js"></script>
     <script src="grupos-data.js"></script>
     <script>
@@ -327,7 +376,7 @@
 
         // Cargar tabla de control de asistencia
         function cargarControlAsistencia() {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             const tbody = document.getElementById('tablaControlAsistencia');
             
             tbody.innerHTML = '';
@@ -390,7 +439,7 @@
 
         // Función para imprimir tabla de asistencia de un grupo específico
         function imprimirTablaGrupo(grupoKey) {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             const grupoInfo = GRUPOS_DATA[grupoKey];
             const nombreGrupo = grupoInfo.nombre;
             const reportesGrupo = reportes.filter(r => 
@@ -602,7 +651,7 @@
 
         // Cargar detalle de asistencia por integrantes de cada grupo
         function cargarDetalleGrupos() {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             const container = document.getElementById('detalleGrupos');
             
             if (!container) return;
@@ -776,7 +825,7 @@
 
         // Cargar estadísticas
         function cargarEstadisticas() {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             
             // Total de reportes
             document.getElementById('totalReportes').textContent = reportes.length;
@@ -840,7 +889,7 @@
         }
 
         function verDetalleReporteAdmin(fechaCreacion) {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             const reporte = reportes.find(r => r.fechaCreacion === fechaCreacion);
             
             if (!reporte) return;
@@ -875,7 +924,7 @@
         }
 
         function imprimirReporteIndividual(fechaCreacion) {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             const reporte = reportes.find(r => r.fechaCreacion === fechaCreacion);
             
             if (!reporte) {
@@ -888,7 +937,7 @@
         }
 
         function verEstadisticasGenerales() {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             
             if (reportes.length === 0) {
                 alert('📊 ESTADÍSTICAS GENERALES\n\nNo hay reportes registrados aún.');
@@ -909,7 +958,7 @@
         }
 
         function exportarDatos() {
-            const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
+            const reportes = window.reportesGlobales || [];
             
             if (reportes.length === 0) {
                 alert('No hay reportes para exportar');
@@ -1485,11 +1534,47 @@
             alert('⚙️ CONFIGURACIÓN\n\nPróximamente podrás:\n• Gestionar usuarios\n• Configurar permisos\n• Personalizar el sistema\n• Ajustar notificaciones');
         }
 
-        function reiniciarSistema() {
+        // Función para sincronizar datos manualmente
+        async function sincronizarDatosManual() {
+            const confirmacion = confirm(
+                '🔄 SINCRONIZAR DATOS\n\n' +
+                'Esta acción recargará todos los reportes desde Firebase.\n\n' +
+                'Los datos más recientes de todos los dispositivos se mostrarán.\n\n' +
+                '¿Deseas continuar?'
+            );
+            
+            if (!confirmacion) return;
+            
+            try {
+                // Mostrar mensaje de carga
+                alert('⏳ Sincronizando con Firebase...\n\nEspere un momento...');
+                
+                // Recargar datos desde Firebase
+                await window.cargarReportesDesdeFirebase();
+                
+                alert(
+                    '✅ SINCRONIZACIÓN COMPLETADA\n\n' +
+                    `Se cargaron ${window.reportesGlobales.length} reportes desde Firebase.\n\n` +
+                    'Los datos están actualizados.'
+                );
+                
+            } catch (error) {
+                console.error('Error al sincronizar:', error);
+                alert(
+                    '⚠️ ERROR AL SINCRONIZAR\n\n' +
+                    'No se pudieron cargar los datos desde Firebase.\n\n' +
+                    'Verifica tu conexión a internet.\n\n' +
+                    'Error: ' + error.message
+                );
+            }
+        }
+
+        async function reiniciarSistema() {
             const confirmacion1 = confirm(
                 '⚠️ ADVERTENCIA: REINICIO DEL SISTEMA\n\n' +
                 'Esta acción eliminará PERMANENTEMENTE:\n\n' +
-                '❌ Todos los reportes guardados\n' +
+                '❌ Todos los reportes guardados en Firebase\n' +
+                '❌ Todos los reportes en localStorage\n' +
                 '❌ Todas las estadísticas acumuladas\n' +
                 '❌ Todo el historial de asistencia\n\n' +
                 '¿Estás seguro que deseas continuar?'
@@ -1502,17 +1587,41 @@
             );
             
             if (confirmacion2 === 'ELIMINAR TODOS LOS DATOS') {
-                // Limpiar todos los datos del localStorage
-                localStorage.removeItem('reportes');
-                
-                alert(
-                    '✅ SISTEMA REINICIADO\n\n' +
-                    'Todos los datos han sido eliminados exitosamente.\n\n' +
-                    'El sistema se recargará ahora...'
-                );
-                
-                // Recargar la página para reflejar los cambios
-                location.reload();
+                try {
+                    // Mostrar mensaje de proceso
+                    alert('⏳ Eliminando datos de Firebase...\n\nEspere un momento...');
+                    
+                    // Eliminar de Firebase
+                    await window.eliminarTodosLosReportesFirebase();
+                    
+                    // Limpiar localStorage
+                    localStorage.removeItem('reportes');
+                    
+                    // Limpiar datos globales
+                    window.reportesGlobales = [];
+                    
+                    alert(
+                        '✅ SISTEMA REINICIADO EXITOSAMENTE\n\n' +
+                        'Todos los datos han sido eliminados de:\n' +
+                        '• Firebase (sincronizado en todos los dispositivos)\n' +
+                        '• Almacenamiento local\n\n' +
+                        'El sistema se recargará ahora...'
+                    );
+                    
+                    // Recargar la página para reflejar los cambios
+                    location.reload();
+                } catch (error) {
+                    console.error('Error al eliminar datos:', error);
+                    alert(
+                        '⚠️ ERROR AL REINICIAR\n\n' +
+                        'Hubo un problema al eliminar los datos de Firebase.\n' +
+                        'Se limpió el almacenamiento local.\n\n' +
+                        'Error: ' + error.message
+                    );
+                    // Limpiar al menos localStorage
+                    localStorage.removeItem('reportes');
+                    location.reload();
+                }
             } else {
                 alert('❌ Reinicio cancelado\n\nLa frase de confirmación no coincide.\nNo se eliminó ningún dato.');
             }
@@ -1520,9 +1629,10 @@
 
         // Cargar datos al iniciar
         cargarEquipos();
-        cargarControlAsistencia();
-        cargarEstadisticas();
-        cargarDetalleGrupos();
+        // Las funciones de carga se llaman desde cargarReportesDesdeFirebase()
+        // cargarControlAsistencia();
+        // cargarEstadisticas();
+        // cargarDetalleGrupos();
     </script>
 </body>
 </html>
