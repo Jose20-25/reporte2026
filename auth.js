@@ -36,7 +36,8 @@ const usuarios = {
 };
 
 // Manejar el envío del formulario
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+const loginForm = document.getElementById('loginForm');
+if (loginForm) loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
     const usuarioSeleccionado = document.getElementById('usuario').value;

@@ -60,3 +60,5 @@ const GRUPOS_DATA = {
         ]
     }
 };
+
+window.GRUPOS_DATA = GRUPOS_DATA;

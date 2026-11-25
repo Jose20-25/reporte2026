@@ -1,6 +1,6 @@
 // Configuración de Firebase para Reporte Misioneros 2026
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -68,11 +68,22 @@ async function eliminarTodosLosReportesFirebase() {
     }
 }
 
+async function obtenerConfiguracionGruposFirebase() {
+    const snapshot = await getDoc(doc(db, "configuracion", "grupos"));
+    return snapshot.exists() ? snapshot.data() : null;
+}
+
+async function guardarConfiguracionGruposFirebase(configuracion) {
+    await setDoc(doc(db, "configuracion", "grupos"), configuracion);
+}
+
 // Exportar funciones
 export { 
     db, 
     guardarReporteFirebase, 
     obtenerReportesFirebase, 
     eliminarReporteFirebase,
-    eliminarTodosLosReportesFirebase 
+    eliminarTodosLosReportesFirebase,
+    obtenerConfiguracionGruposFirebase,
+    guardarConfiguracionGruposFirebase
 };

@@ -251,38 +251,51 @@
         // Si no hay misión seleccionada, usar el grupo del líder por defecto
         const grupoAsignado = grupoDelLider;
         
-        const datosGrupo = GRUPOS_DATA[grupoAsignado];
-        
-        // Obtener datos de la filial seleccionada
-        let datosFilial = datosGrupo; // Por defecto usar los datos del grupo
-        if (misionSeleccionada && GRUPOS_DATA[misionSeleccionada]) {
-            datosFilial = GRUPOS_DATA[misionSeleccionada];
-        }
+        let datosGrupo;
+        let datosFilial;
 
-        if (datosGrupo) {
-            // Mostrar la filial (mision) que están visitando
-            document.getElementById('headerTitle').innerHTML = datosFilial.emoji + ' ' + datosFilial.mision;
+        async function inicializarDatosMisioneros() {
+            const { cargarConfiguracionGrupos } = await import('./group-config.js');
+            const { configuracion } = await cargarConfiguracionGrupos();
+            datosGrupo = configuracion.grupos[grupoAsignado];
+            datosFilial = configuracion.filiales.find(filial => filial.id === misionSeleccionada && filial.activa !== false)
+                || configuracion.filiales.find(filial => filial.id === grupoAsignado && filial.activa !== false)
+                || configuracion.filiales.find(filial => filial.activa !== false);
+
+            if (!datosGrupo || !datosFilial) {
+                alert('Este grupo o filial no está disponible. Contacta al administrador.');
+                window.location.href = usuario.rol === 'administrador' ? 'dashboard-admin.html' : 'reportes-misiones.html';
+                return;
+            }
+
+            document.getElementById('headerTitle').textContent = `${datosFilial.emoji || '📍'} ${datosFilial.mision}`;
             document.getElementById('grupoTitulo').textContent = datosFilial.mision;
-            document.getElementById('grupoLogo').src = datosFilial.logo;
-            document.getElementById('liderIcon').innerHTML = datosGrupo.liderIcono + ' Líder del ' + datosGrupo.nombre;
+            document.getElementById('grupoLogo').src = datosFilial.logo || 'logo/Central.png';
+            document.getElementById('liderIcon').textContent = `${datosGrupo.liderIcono || '👤'} Líder del ${datosGrupo.nombre}`;
             document.getElementById('liderNombre').textContent = datosGrupo.lider;
 
             const auxiliaresGrid = document.getElementById('auxiliaresGrid');
-            auxiliaresGrid.innerHTML = '';
-            
+            auxiliaresGrid.replaceChildren();
             datosGrupo.auxiliares.forEach(auxiliar => {
                 const card = document.createElement('div');
                 card.className = 'auxiliar-card';
-                card.innerHTML = `
-                    <div class="auxiliar-icon">${auxiliar.icono}</div>
-                    <p class="auxiliar-name">${auxiliar.nombre}</p>
-                `;
+                const icon = document.createElement('div');
+                icon.className = 'auxiliar-icon';
+                icon.textContent = auxiliar.icono || '👤';
+                const name = document.createElement('p');
+                name.className = 'auxiliar-name';
+                name.textContent = auxiliar.nombre;
+                card.append(icon, name);
                 auxiliaresGrid.appendChild(card);
             });
-
             document.getElementById('totalAuxiliares').textContent = datosGrupo.auxiliares.length;
+            cargarReportes();
         }
 
+        inicializarDatosMisioneros().catch(error => {
+            console.error('No se pudieron cargar los datos del grupo:', error);
+            alert('No se pudo cargar la información del grupo. Recarga la página.');
+        });
         document.getElementById('cantidadAdultos').addEventListener('input', calcularTotal);
         document.getElementById('cantidadNinos').addEventListener('input', calcularTotal);
 
@@ -381,6 +394,7 @@
         }
 
         function toggleFormularioReporte() {
+            if (!datosGrupo || !datosFilial) return;
             const formulario = document.getElementById('formularioReporte');
             if (formulario.style.display === 'none') {
                 formulario.style.display = 'block';
@@ -471,6 +485,7 @@
         }
 
         function cargarReportes() {
+            if (!datosGrupo) return;
             const reportes = JSON.parse(localStorage.getItem('reportes') || '[]');
             const tbody = document.getElementById('tablaReportes');
             

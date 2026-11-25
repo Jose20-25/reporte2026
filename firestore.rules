@@ -5,6 +5,11 @@ service cloud.firestore {
     match /reportes/{reporteId} {
       allow read, write: if true;
     }
+
+    // Configuración compartida editable desde el panel administrativo.
+    match /configuracion/{configuracionId} {
+      allow read, write: if true;
+    }
     
     // Para producción, usar autenticación:
     // allow read, write: if request.auth != null;

@@ -25,55 +25,13 @@
             <div class="mission-intro">
                 <h2>🌍 Nuestras Misiones</h2>
                 <p>
-                    El ministerio misionero de nuestra iglesia central alcanza a comunidades necesitadas 
-                    llevando el mensaje de esperanza y amor. A través de nuestras tres misiones principales: 
-                    El Sauce, El Pital y La Tekera, impactamos vidas y transformamos corazones. 
-                    Cada misión es un faro de luz en su comunidad, trabajando incansablemente para servir, 
-                    evangelizar y edificar el Reino de Dios.
+                    El ministerio misionero acompaña a las comunidades con un mensaje de esperanza y servicio.
+                    Cada filial es un espacio para compartir, apoyar a las familias y fortalecer la vida de la comunidad.
                 </p>
             </div>
 
             <!-- Tarjetas de misiones -->
-            <div class="missions-grid">
-                <!-- Misión El Sauce -->
-                <div class="mission-card sauce" onclick="verReportes('sauce')">
-                    <div class="mission-logo">
-                        <img src="logo/El Sauce.png" alt="El Sauce" class="logo-img">
-                    </div>
-                    <h3>El Sauce</h3>
-                    <p>
-                        Comunidad agrícola dedicada al servicio y evangelización. 
-                        Una misión comprometida con el crecimiento espiritual de sus habitantes.
-                    </p>
-                    <button class="btn-view-reports">Ver Reportes</button>
-                </div>
-
-                <!-- Misión El Pital -->
-                <div class="mission-card pital" onclick="verReportes('pital')">
-                    <div class="mission-logo">
-                        <img src="logo/El Pital.png" alt="El Pital" class="logo-img">
-                    </div>
-                    <h3>El Pital</h3>
-                    <p>
-                        Ubicada en zona montañosa, esta misión alcanza a familias rurales 
-                        con el mensaje de salvación y esperanza.
-                    </p>
-                    <button class="btn-view-reports">Ver Reportes</button>
-                </div>
-
-                <!-- Misión La Tekera -->
-                <div class="mission-card tekera" onclick="verReportes('tekera')">
-                    <div class="mission-logo">
-                        <img src="logo/La Tekera.png" alt="La Tekera" class="logo-img">
-                    </div>
-                    <h3>La Tekera</h3>
-                    <p>
-                        Misión urbana enfocada en alcanzar nuevas generaciones 
-                        y fortalecer familias a través de la Palabra de Dios.
-                    </p>
-                    <button class="btn-view-reports">Ver Reportes</button>
-                </div>
-            </div>
+            <div class="missions-grid" id="missionsGrid" aria-live="polite"></div>
 
             <!-- Información de la iglesia central -->
             <div class="mission-intro" style="margin-top: 50px; background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);">
@@ -89,6 +47,7 @@
     </div>
 
     <script src="auth.js"></script>
+    <script src="grupos-data.js"></script>
     <script>
         // Verificar sesión al cargar la página
         if (!verificarSesion()) {
@@ -100,6 +59,55 @@
         document.getElementById('userName').textContent = usuario.nombre;
 
         // Función para ver reportes de una misión específica
+        async function cargarFiliales() {
+            const { cargarConfiguracionGrupos } = await import('./group-config.js');
+            const { configuracion } = await cargarConfiguracionGrupos();
+            const grid = document.getElementById('missionsGrid');
+            const filiales = configuracion.filiales.filter(filial => filial.activa !== false);
+            grid.replaceChildren();
+
+            if (filiales.length === 0) {
+                grid.textContent = 'No hay filiales disponibles en este momento.';
+                return;
+            }
+
+            filiales.forEach(filial => {
+                const card = document.createElement('article');
+                card.className = `mission-card${['sauce', 'pital', 'tekera'].includes(filial.id) ? ` ${filial.id}` : ''}`;
+                card.tabIndex = 0;
+                card.setAttribute('role', 'link');
+                card.addEventListener('click', () => verReportes(filial.id));
+                card.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        verReportes(filial.id);
+                    }
+                });
+
+                const logoWrap = document.createElement('div');
+                logoWrap.className = 'mission-logo';
+                const logo = document.createElement('img');
+                logo.src = filial.logo || 'logo/Central.png';
+                logo.alt = '';
+                logo.className = 'logo-img';
+                logoWrap.appendChild(logo);
+                const title = document.createElement('h3');
+                title.textContent = `${filial.emoji || '📍'} ${filial.mision}`;
+                const description = document.createElement('p');
+                description.textContent = filial.descripcion || 'Comunidad atendida por el equipo misionero.';
+                const action = document.createElement('span');
+                action.className = 'btn-view-reports';
+                action.textContent = 'Ver reportes';
+                card.append(logoWrap, title, description, action);
+                grid.appendChild(card);
+            });
+        }
+
+        cargarFiliales().catch(error => {
+            console.error('No se pudieron cargar las filiales:', error);
+            document.getElementById('missionsGrid').textContent = 'No se pudieron cargar las filiales. Recarga la página.';
+        });
+
         function verReportes(mision) {
             // Guardar la misión seleccionada (filial a visitar)
             sessionStorage.setItem('misionSeleccionada', mision);

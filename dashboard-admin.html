@@ -10,7 +10,7 @@
     <title>Panel de Administración - Reporte Misioneros</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="admin-page">
     <div class="dashboard">
         <div class="header">
             <div class="header-content">
@@ -51,7 +51,7 @@
                 <div class="stat-card stat-blue">
                     <div class="stat-icon">👥</div>
                     <div class="stat-info">
-                        <h3>3</h3>
+                    <h3 id="adminGroupCount">3</h3>
                         <p>Grupos Activos</p>
                     </div>
                 </div>
@@ -74,6 +74,7 @@
             <!-- Grupos Misioneros -->
             <div class="section">
                 <h3 class="section-title">📍 Grupos Misioneros</h3>
+                <div class="filial-section-heading"><p>Agrega equipos misioneros y administra sus reportes.</p><button class="btn-add-filial" type="button" onclick="abrirEditorGrupo()">+ Agregar grupo misionero</button></div>
                 <div class="admin-groups-grid">
                     <div class="admin-group-card sauce">
                         <div class="group-card-header">
@@ -101,6 +102,7 @@
                                 <span class="mini-stat-value" id="reportesSauce">0</span>
                             </div>
                         </div>
+                        <button class="btn-group-edit" type="button" onclick="abrirEditorGrupo('sauce')">Editar líder y equipo</button>
                         <button class="btn-group-access" onclick="verGrupo('sauce')">
                             Ver Reportes →
                         </button>
@@ -132,6 +134,7 @@
                                 <span class="mini-stat-value" id="reportesPital">0</span>
                             </div>
                         </div>
+                        <button class="btn-group-edit" type="button" onclick="abrirEditorGrupo('pital')">Editar líder y equipo</button>
                         <button class="btn-group-access" onclick="verGrupo('pital')">
                             Ver Reportes →
                         </button>
@@ -163,11 +166,24 @@
                                 <span class="mini-stat-value" id="reportesTekera">0</span>
                             </div>
                         </div>
+                        <button class="btn-group-edit" type="button" onclick="abrirEditorGrupo('tekera')">Editar líder y equipo</button>
                         <button class="btn-group-access" onclick="verGrupo('tekera')">
                             Ver Reportes →
                         </button>
                     </div>
                 </div>
+                <div id="adminExtraGroups" class="admin-groups-grid" aria-live="polite"></div>
+            </div>
+            <div class="section filial-management">
+                <div class="filial-section-heading">
+                    <div>
+                        <h3 class="section-title">Administrar filiales</h3>
+                        <p>Actualiza los destinos de misión disponibles para crear reportes.</p>
+                        <p id="configSyncStatus" class="config-sync-status" role="status">Cargando configuración…</p>
+                    </div>
+                    <button class="btn-add-filial" type="button" onclick="abrirEditorFilial()">＋ Agregar filial</button>
+                </div>
+                <div id="adminFiliales" class="admin-filiales-grid" aria-live="polite"></div>
             </div>
 
             <!-- Acciones rápidas -->
@@ -202,11 +218,11 @@
                             <small>Descargar datos en Excel</small>
                         </span>
                     </button>
-                    <button class="action-btn action-warning" onclick="configuracion()">
-                        <span class="action-icon">⚙️</span>
+                    <button class="action-btn action-warning" onclick="irAReportes()">
+                        <span class="action-icon">🔎</span>
                         <span class="action-text">
-                            <strong>Configuración</strong>
-                            <small>Ajustes del sistema</small>
+                            <strong>Buscar reportes</strong>
+                            <small>Filtrar por grupo o actividad</small>
                         </span>
                     </button>
                     <button class="action-btn action-danger" onclick="reiniciarSistema()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
@@ -256,8 +272,34 @@
             </div>
 
             <!-- Reportes recientes -->
-            <div class="section">
-                <h3 class="section-title">� Lista de Reportes</h3>
+            <div class="section" id="reportsSection">
+                <h3 class="section-title">🗂️ Reportes</h3>
+                <div class="report-toolbar" role="search" aria-label="Buscar y filtrar reportes">
+                    <label class="report-search">
+                        <span>Buscar</span>
+                        <input id="reportSearch" type="search" placeholder="Fecha, líder, filial o actividad…" autocomplete="off">
+                    </label>
+                    <label>
+                        <span>Filial</span>
+                        <select id="reportGroupFilter">
+                            <option value="all">Todos los grupos</option>
+                            <option value="sauce">El Sauce</option>
+                            <option value="pital">El Pital</option>
+                            <option value="tekera">La Tekera</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Mostrar</span>
+                        <select id="reportLimit">
+                            <option value="10">10 reportes</option>
+                            <option value="25">25 reportes</option>
+                            <option value="50">50 reportes</option>
+                            <option value="all">Todos</option>
+                        </select>
+                    </label>
+                    <button class="report-reset" type="button" onclick="limpiarFiltrosReportes()">Limpiar filtros</button>
+                </div>
+                <p id="reportResultsCount" class="report-results-count" aria-live="polite"></p>
                 <div class="recent-activity">
                     <table class="activity-table">
                         <thead>
@@ -281,8 +323,53 @@
                     </table>
                 </div>
             </div>
-        </div>
+
+                    </div>
     </div>
+
+    <dialog id="groupEditorDialog" class="admin-editor-dialog">
+        <form id="groupEditorForm" onsubmit="guardarEdicionGrupo(event)">
+            <p class="editor-kicker">EQUIPO MISIONERO</p>
+            <h2 id="groupEditorTitle">Editar grupo</h2>
+            <input id="editingGroupId" type="hidden">
+            <label for="groupNameInput">Nombre del grupo</label>
+            <input id="groupNameInput" type="text" maxlength="70" required>
+            <label for="groupMissionInput">Misión o filial asociada</label>
+            <input id="groupMissionInput" type="text" maxlength="70" required>
+            <label for="groupEmojiInput">Símbolo o emoji</label>
+            <input id="groupEmojiInput" type="text" maxlength="8" placeholder="📍">
+            <label for="groupLeaderInput">Líder del grupo</label>
+            <input id="groupLeaderInput" type="text" maxlength="100" required>
+            <label for="groupMembersInput">Integrantes</label>
+            <textarea id="groupMembersInput" rows="9" placeholder="Un integrante por línea"></textarea>
+            <p class="editor-hint">Escribe un nombre por línea. Los cambios se reflejarán en los próximos reportes de asistencia.</p>
+            <p id="groupEditorStatus" class="editor-status" role="status"></p>
+            <div class="editor-actions">
+                <button type="button" class="editor-cancel" onclick="cerrarEditor('groupEditorDialog')">Cancelar</button>
+                <button type="submit" class="editor-save">Guardar grupo</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="filialEditorDialog" class="admin-editor-dialog">
+        <form id="filialEditorForm" onsubmit="guardarEdicionFilial(event)">
+            <p class="editor-kicker">DESTINO MISIONERO</p>
+            <h2 id="filialEditorTitle">Agregar filial</h2>
+            <input id="editingFilialId" type="hidden">
+            <label for="filialNameInput">Nombre de la filial</label>
+            <input id="filialNameInput" type="text" maxlength="70" required>
+            <label for="filialEmojiInput">Símbolo o emoji</label>
+            <input id="filialEmojiInput" type="text" maxlength="8" placeholder="📍">
+            <label for="filialDescriptionInput">Descripción</label>
+            <textarea id="filialDescriptionInput" rows="3" maxlength="240" placeholder="Breve descripción de la comunidad"></textarea>
+            <label class="filial-active-toggle"><input id="filialActiveInput" type="checkbox" checked> Disponible para nuevos reportes</label>
+            <p id="filialEditorStatus" class="editor-status" role="status"></p>
+            <div class="editor-actions">
+                <button type="button" class="editor-cancel" onclick="cerrarEditor('filialEditorDialog')">Cancelar</button>
+                <button type="submit" class="editor-save">Guardar filial</button>
+            </div>
+        </form>
+    </dialog>
 
     <script type="module">
         // Importar funciones de Firebase
@@ -344,34 +431,309 @@
         // Mostrar nombre del usuario
         document.getElementById('userName').textContent = usuario.nombre;
 
-        // Cargar equipos de cada grupo
+        ['reportSearch', 'reportGroupFilter', 'reportLimit'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                cargarActividadReciente(window.reportesGlobales || []);
+            });
+            document.getElementById(id).addEventListener('change', () => {
+                cargarActividadReciente(window.reportesGlobales || []);
+            });
+        });
+
+        let configuracionMisionera = { grupos: GRUPOS_DATA, filiales: [] };
+        let guardarConfigRemota;
+
+        function aplicarGruposConfigurados() {
+            Object.keys(GRUPOS_DATA).forEach(id => delete GRUPOS_DATA[id]);
+            Object.assign(GRUPOS_DATA, configuracionMisionera.grupos);
+            const groupCount = document.getElementById('adminGroupCount');
+            if (groupCount) groupCount.textContent = String(Object.keys(configuracionMisionera.grupos).length);
+
+            Object.entries(configuracionMisionera.grupos).forEach(([id, grupo]) => {
+                const card = document.querySelector(`.admin-group-card.${id}`);
+                if (!card) return;
+                const titulo = card.querySelector('.group-card-header h4');
+                const lider = card.querySelector('.group-leader');
+                const totalEquipo = card.querySelector('.group-card-stats .mini-stat-value');
+                const auxiliaresGrid = card.querySelector('.auxiliares-mini-grid');
+                if (titulo) titulo.textContent = `${grupo.nombre} - ${grupo.mision}`;
+                if (lider) lider.textContent = `${grupo.liderIcono || '👤'} Líder: ${grupo.lider}`;
+                if (totalEquipo) totalEquipo.textContent = String(grupo.auxiliares.length + 1);
+                if (auxiliaresGrid) {
+                    auxiliaresGrid.replaceChildren();
+                    grupo.auxiliares.forEach(integrante => {
+                        const item = document.createElement('div');
+                        item.className = 'auxiliar-mini-card';
+                        const icono = document.createElement('span');
+                        icono.className = 'aux-icon';
+                        icono.textContent = integrante.icono || '👤';
+                        const nombre = document.createElement('span');
+                        nombre.className = 'aux-name';
+                        nombre.textContent = integrante.nombre;
+                        item.append(icono, nombre);
+                        auxiliaresGrid.appendChild(item);
+                    });
+                }
+            });
+            renderizarGruposExtra();
+        }
+
+        function renderizarGruposExtra() {
+            const container = document.getElementById('adminExtraGroups');
+            if (!container) return;
+            container.replaceChildren();
+            Object.entries(configuracionMisionera.grupos).forEach(([id, grupo]) => {
+                if (document.querySelector(`.admin-group-card.${id}`)) return;
+                const card = document.createElement('div');
+                card.className = 'admin-group-card';
+                const header = document.createElement('div');
+                header.className = 'group-card-header';
+                const logo = document.createElement('img');
+                logo.className = 'group-card-logo';
+                logo.src = grupo.logo || 'logo/Central.png';
+                logo.alt = '';
+                const identity = document.createElement('div');
+                const title = document.createElement('h4');
+                title.textContent = `${grupo.nombre} - ${grupo.mision}`;
+                const leader = document.createElement('p');
+                leader.className = 'group-leader';
+                leader.textContent = `${grupo.liderIcono || '👤'} Líder: ${grupo.lider}`;
+                identity.append(title, leader);
+                header.append(logo, identity);
+                const team = document.createElement('div');
+                team.className = 'equipo-section';
+                const teamTitle = document.createElement('h5');
+                teamTitle.className = 'equipo-title';
+                teamTitle.textContent = '👥 Equipo de Auxiliares';
+                const members = document.createElement('div');
+                members.className = 'auxiliares-mini-grid';
+                (grupo.auxiliares || []).forEach(persona => {
+                    const member = document.createElement('div');
+                    member.className = 'auxiliar-mini-card';
+                    const icon = document.createElement('span');
+                    icon.className = 'aux-icon';
+                    icon.textContent = persona.icono || '👤';
+                    const name = document.createElement('span');
+                    name.className = 'aux-name';
+                    name.textContent = persona.nombre;
+                    member.append(icon, name);
+                    members.appendChild(member);
+                });
+                team.append(teamTitle, members);
+                const stats = document.createElement('div');
+                stats.className = 'group-card-stats';
+                const teamStat = document.createElement('div');
+                teamStat.className = 'mini-stat';
+                teamStat.innerHTML = '<span class="mini-stat-label">Total Equipo</span>';
+                const teamCount = document.createElement('span');
+                teamCount.className = 'mini-stat-value';
+                teamCount.textContent = String((grupo.auxiliares || []).length + 1);
+                teamStat.appendChild(teamCount);
+                const reportStat = document.createElement('div');
+                reportStat.className = 'mini-stat';
+                reportStat.innerHTML = '<span class="mini-stat-label">Reportes</span>';
+                const reportCount = document.createElement('span');
+                reportCount.className = 'mini-stat-value';
+                const reportesGrupo = (window.reportesGlobales || []).filter(reporte => reporte.grupo === grupo.nombre || reporte.mision === grupo.mision);
+                reportCount.textContent = String(reportesGrupo.length);
+                reportStat.appendChild(reportCount);
+                stats.append(teamStat, reportStat);
+                const edit = document.createElement('button');
+                edit.type = 'button';
+                edit.className = 'btn-group-edit';
+                edit.textContent = 'Editar líder y equipo';
+                edit.addEventListener('click', () => abrirEditorGrupo(id));
+                const access = document.createElement('button');
+                access.type = 'button';
+                access.className = 'btn-group-access';
+                access.textContent = 'Ver Reportes →';
+                access.addEventListener('click', () => verGrupo(id));
+                card.append(header, team, stats, edit, access);
+                container.appendChild(card);
+            });
+        }
+
+        function renderizarFilialesAdmin() {
+            const container = document.getElementById('adminFiliales');
+            const selector = document.getElementById('reportGroupFilter');
+            const seleccionActual = selector.value || 'all';
+            selector.replaceChildren();
+            const todas = document.createElement('option');
+            todas.value = 'all';
+            todas.textContent = 'Todas las filiales';
+            selector.appendChild(todas);
+            configuracionMisionera.filiales.forEach(filial => {
+                const option = document.createElement('option');
+                option.value = filial.id;
+                option.textContent = filial.mision + (filial.activa === false ? ' (pausada)' : '');
+                selector.appendChild(option);
+            });
+            selector.value = [...selector.options].some(option => option.value === seleccionActual) ? seleccionActual : 'all';
+            container.replaceChildren();
+            configuracionMisionera.filiales.forEach(filial => {
+                const card = document.createElement('article');
+                card.className = `admin-filial-card${filial.activa === false ? ' is-inactive' : ''}`;
+                const icon = document.createElement('span');
+                icon.className = 'admin-filial-icon';
+                icon.textContent = filial.emoji || '📍';
+                const title = document.createElement('h4');
+                title.textContent = filial.mision;
+                const description = document.createElement('p');
+                description.textContent = filial.descripcion || 'Sin descripción';
+                const status = document.createElement('span');
+                status.className = 'filial-status';
+                status.textContent = filial.activa === false ? 'Pausada' : 'Disponible';
+                const edit = document.createElement('button');
+                edit.type = 'button';
+                edit.className = 'filial-edit-button';
+                edit.textContent = 'Editar filial';
+                edit.addEventListener('click', () => abrirEditorFilial(filial.id));
+                card.append(icon, title, description, status, edit);
+                container.appendChild(card);
+            });
+        }
+
+        async function inicializarConfiguracionMisionera() {
+            const { cargarConfiguracionGrupos, guardarConfiguracionGrupos } = await import('./group-config.js');
+            guardarConfigRemota = guardarConfiguracionGrupos;
+            const resultado = await cargarConfiguracionGrupos();
+            configuracionMisionera = resultado.configuracion;
+            aplicarGruposConfigurados();
+            renderizarFilialesAdmin();
+            document.getElementById('configSyncStatus').textContent = resultado.sincronizada
+                ? 'Configuración compartida sincronizada.'
+                : 'Firebase no permite leer la configuración todavía. Publica firestore.rules para compartir cambios entre dispositivos.';
+        }
+
+        async function persistirConfiguracionMisionera() {
+            const resultado = await guardarConfigRemota(configuracionMisionera);
+            configuracionMisionera = resultado.configuracion;
+            aplicarGruposConfigurados();
+            renderizarFilialesAdmin();
+            document.getElementById('configSyncStatus').textContent = resultado.sincronizada
+                ? 'Cambios guardados y sincronizados para los usuarios.'
+                : 'Cambios guardados en este dispositivo. Despliega las reglas de Firestore para compartirlos.';
+            return resultado.sincronizada;
+        }
+
+        function cerrarEditor(id) {
+            document.getElementById(id).close();
+        }
+
+        function abrirEditorGrupo(id = '') {
+            const grupo = id ? configuracionMisionera.grupos[id] : null;
+            document.getElementById('editingGroupId').value = grupo ? id : '';
+            document.getElementById('groupEditorTitle').textContent = grupo ? `Editar ${grupo.nombre}` : 'Agregar grupo misionero';
+            document.getElementById('groupNameInput').value = grupo?.nombre || `Grupo N°${Object.keys(configuracionMisionera.grupos).length + 1}`;
+            document.getElementById('groupMissionInput').value = grupo?.mision || '';
+            document.getElementById('groupEmojiInput').value = grupo?.emoji || '📍';
+            document.getElementById('groupLeaderInput').value = grupo?.lider || '';
+            document.getElementById('groupMembersInput').value = (grupo?.auxiliares || []).map(item => item.nombre).join('\n');
+            document.getElementById('groupEditorStatus').textContent = '';
+            document.getElementById('groupEditorDialog').showModal();
+        }
+
+        async function guardarEdicionGrupo(event) {
+            event.preventDefault();
+            const idAnterior = document.getElementById('editingGroupId').value;
+            const nombreGrupo = document.getElementById('groupNameInput').value.trim();
+            const mision = document.getElementById('groupMissionInput').value.trim();
+            const idBase = mision.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'grupo';
+            let id = idAnterior || idBase;
+            let numeroId = 2;
+            while (!idAnterior && (configuracionMisionera.grupos[id] || configuracionMisionera.filiales.some(item => item.id === id))) id = `${idBase}-${numeroId++}`;
+            const grupo = configuracionMisionera.grupos[id] || { auxiliares: [] };
+            const normalizarTextoGrupo = valor => String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
+            const nombreDuplicado = Object.entries(configuracionMisionera.grupos).some(([key, item]) => key !== idAnterior && normalizarTextoGrupo(item.nombre) === normalizarTextoGrupo(nombreGrupo));
+            if (nombreDuplicado) {
+                document.getElementById('groupEditorStatus').textContent = 'Ya existe un grupo con ese nombre.';
+                return;
+            }
+            const anteriores = grupo.auxiliares || [];
+            grupo.nombre = nombreGrupo;
+            grupo.mision = mision;
+            grupo.emoji = document.getElementById('groupEmojiInput').value.trim() || '📍';
+            grupo.logo = grupo.logo || 'logo/Central.png';
+            grupo.lider = document.getElementById('groupLeaderInput').value.trim();
+            grupo.liderIcono = grupo.liderIcono || '👤';
+            grupo.auxiliares = document.getElementById('groupMembersInput').value
+                .split('\n').map(nombre => nombre.trim()).filter(Boolean)
+                .map(nombre => ({
+                    nombre,
+                    icono: anteriores.find(item => item.nombre.toLocaleLowerCase('es') === nombre.toLocaleLowerCase('es'))?.icono || '👤'
+                }));
+            configuracionMisionera.grupos[id] = grupo;
+            if (!idAnterior) {
+                const normalizarNombre = valor => valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+                let filial = configuracionMisionera.filiales.find(item => normalizarNombre(item.mision) === normalizarNombre(mision));
+                if (!filial) {
+                    filial = { id, mision, emoji: grupo.emoji, logo: grupo.logo, descripcion: `Misión atendida por ${nombreGrupo}.`, activa: true };
+                    configuracionMisionera.filiales.push(filial);
+                }
+                grupo.filialId = filial.id;
+            } else {
+                const filial = configuracionMisionera.filiales.find(item => item.id === grupo.filialId);
+                if (filial) Object.assign(filial, { mision, emoji: grupo.emoji });
+            }
+            const sincronizada = await persistirConfiguracionMisionera();
+            document.getElementById('groupEditorStatus').textContent = sincronizada
+                ? 'Grupo actualizado y sincronizado.'
+                : 'Actualizado localmente; falta publicar las reglas de Firestore para compartirlo.';
+            if (sincronizada) cerrarEditor('groupEditorDialog');
+        }
+
+        function abrirEditorFilial(id = '') {
+            const filial = configuracionMisionera.filiales.find(item => item.id === id);
+            document.getElementById('editingFilialId').value = filial?.id || '';
+            document.getElementById('filialEditorTitle').textContent = filial ? 'Editar filial' : 'Agregar filial';
+            document.getElementById('filialNameInput').value = filial?.mision || '';
+            document.getElementById('filialEmojiInput').value = filial?.emoji || '📍';
+            document.getElementById('filialDescriptionInput').value = filial?.descripcion || '';
+            document.getElementById('filialActiveInput').checked = filial?.activa !== false;
+            document.getElementById('filialEditorStatus').textContent = '';
+            document.getElementById('filialEditorDialog').showModal();
+        }
+
+        async function guardarEdicionFilial(event) {
+            event.preventDefault();
+            const idAnterior = document.getElementById('editingFilialId').value;
+            const nombre = document.getElementById('filialNameInput').value.trim();
+            const normalizarNombre = valor => valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLocaleLowerCase('es');
+            const duplicada = configuracionMisionera.filiales.some(item => item.id !== idAnterior && normalizarNombre(item.mision) === normalizarNombre(nombre));
+            if (duplicada) {
+                document.getElementById('filialEditorStatus').textContent = 'Ya existe una filial con ese nombre.';
+                return;
+            }
+            const slug = nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'filial';
+            let id = idAnterior || slug;
+            let numero = 2;
+            while (!idAnterior && configuracionMisionera.filiales.some(item => item.id === id)) id = `${slug}-${numero++}`;
+            const anterior = configuracionMisionera.filiales.find(item => item.id === idAnterior);
+            const filial = {
+                id,
+                mision: nombre,
+                emoji: document.getElementById('filialEmojiInput').value.trim() || '📍',
+                descripcion: document.getElementById('filialDescriptionInput').value.trim(),
+                logo: anterior?.logo || 'logo/Central.png',
+                activa: document.getElementById('filialActiveInput').checked
+            };
+            if (anterior) Object.assign(anterior, filial);
+            else configuracionMisionera.filiales.push(filial);
+            const sincronizada = await persistirConfiguracionMisionera();
+            document.getElementById('filialEditorStatus').textContent = sincronizada
+                ? 'Filial guardada y disponible para los usuarios.'
+                : 'Guardada localmente; falta publicar las reglas de Firestore para compartirla.';
+            if (sincronizada) cerrarEditor('filialEditorDialog');
+        }
+
+        window.abrirEditorGrupo = abrirEditorGrupo;
+        window.guardarEdicionGrupo = guardarEdicionGrupo;
+        window.abrirEditorFilial = abrirEditorFilial;
+        window.guardarEdicionFilial = guardarEdicionFilial;
+        window.cerrarEditor = cerrarEditor;
+
         function cargarEquipos() {
-            // Grupo El Sauce
-            const sauceGrid = document.getElementById('auxiliaresSauce');
-            GRUPOS_DATA.sauce.auxiliares.forEach(aux => {
-                const div = document.createElement('div');
-                div.className = 'auxiliar-mini-card';
-                div.innerHTML = `<span class="aux-icon">${aux.icono}</span><span class="aux-name">${aux.nombre}</span>`;
-                sauceGrid.appendChild(div);
-            });
-
-            // Grupo El Pital
-            const pitalGrid = document.getElementById('auxiliaresPital');
-            GRUPOS_DATA.pital.auxiliares.forEach(aux => {
-                const div = document.createElement('div');
-                div.className = 'auxiliar-mini-card';
-                div.innerHTML = `<span class="aux-icon">${aux.icono}</span><span class="aux-name">${aux.nombre}</span>`;
-                pitalGrid.appendChild(div);
-            });
-
-            // Grupo La Tekera
-            const tekeraGrid = document.getElementById('auxiliaresTekera');
-            GRUPOS_DATA.tekera.auxiliares.forEach(aux => {
-                const div = document.createElement('div');
-                div.className = 'auxiliar-mini-card';
-                div.innerHTML = `<span class="aux-icon">${aux.icono}</span><span class="aux-name">${aux.nombre}</span>`;
-                tekeraGrid.appendChild(div);
-            });
+            aplicarGruposConfigurados();
         }
 
         // Cargar tabla de control de asistencia
@@ -611,7 +973,7 @@
                 <body>
                     <div class="header">
                         <h1>📊 CONTROL DE ASISTENCIA POR GRUPO</h1>
-                        <h2>${grupoInfo.icono} ${grupoInfo.mision} - ${nombreGrupo}</h2>
+                        <h2>${grupoInfo.emoji} ${grupoInfo.mision} - ${nombreGrupo}</h2>
                     </div>
                     
                     <div class="info">
@@ -684,7 +1046,7 @@
                 titulo.style.color = '#667eea';
                 titulo.style.fontSize = '16px';
                 titulo.style.margin = '0';
-                titulo.innerHTML = `${grupoInfo.icono} ${grupoInfo.mision} - ${nombreGrupo}`;
+                titulo.innerHTML = `${grupoInfo.emoji} ${grupoInfo.mision} - ${nombreGrupo}`;
                 
                 const btnImprimir = document.createElement('button');
                 btnImprimir.innerHTML = '🖨️ Imprimir Tabla';
@@ -838,11 +1200,15 @@
             const promedio = reportes.length > 0 ? Math.round(totalAsistentes / reportes.length) : 0;
             document.getElementById('promedioAsistencia').textContent = promedio;
             
-            // Reportes por grupo
-            const reportesSauce = reportes.filter(r => r.grupo === 'Grupo N°1 El Sauce').length;
-            const reportesPital = reportes.filter(r => r.grupo === 'Grupo N°2 El Pital').length;
-            const reportesTekera = reportes.filter(r => r.grupo === 'Grupo N°3 La Tekera').length;
-            
+            // Reportes por grupo, usando la filial como respaldo cuando el nombre de grupo viene abreviado.
+            const normalizarGrupo = texto => String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+            const perteneceAlGrupo = (reporte, grupo) => reporte.grupo
+                ? normalizarGrupo(reporte.grupo) === normalizarGrupo(grupo.nombre)
+                : normalizarGrupo(reporte.mision) === normalizarGrupo(grupo.mision);
+            const reportesSauce = reportes.filter(r => perteneceAlGrupo(r, GRUPOS_DATA.sauce)).length;
+            const reportesPital = reportes.filter(r => perteneceAlGrupo(r, GRUPOS_DATA.pital)).length;
+            const reportesTekera = reportes.filter(r => perteneceAlGrupo(r, GRUPOS_DATA.tekera)).length;
+
             document.getElementById('reportesSauce').textContent = reportesSauce;
             document.getElementById('reportesPital').textContent = reportesPital;
             document.getElementById('reportesTekera').textContent = reportesTekera;
@@ -853,12 +1219,30 @@
 
         function cargarActividadReciente(reportes) {
             const tbody = document.getElementById('actividadReciente');
-            
-            if (reportes.length === 0) {
+            const consulta = document.getElementById('reportSearch').value.trim().toLocaleLowerCase('es');
+            const grupo = document.getElementById('reportGroupFilter').value;
+            const limiteSeleccionado = document.getElementById('reportLimit').value;
+            const normalizar = texto => String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+            const resultados = reportes.filter(reporte => {
+                const texto = normalizar([
+                    reporte.fecha, reporte.mision, reporte.grupo, reporte.tipo, reporte.lider,
+                    reporte.actividadRealizada, reporte.actividadProgramada, reporte.observaciones
+                ].join(' '));
+                const filialSeleccionada = configuracionMisionera.filiales.find(filial => filial.id === grupo);
+                const misionGrupo = normalizar(`${reporte.mision || ''} ${reporte.grupo || ''}`);
+                const coincideGrupo = grupo === 'all' || (filialSeleccionada && normalizar(reporte.mision) === normalizar(filialSeleccionada.mision)) || misionGrupo.includes(grupo);
+                return coincideGrupo && (!consulta || texto.includes(normalizar(consulta)));
+            });
+            const limite = limiteSeleccionado === 'all' ? resultados.length : Number(limiteSeleccionado);
+            const visibles = resultados.slice(0, limite);
+            const contador = document.getElementById('reportResultsCount');
+            contador.textContent = `Mostrando ${visibles.length} de ${resultados.length} reportes coincidentes · ${reportes.length} en total`;
+
+            if (visibles.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 30px; color: #999;">
-                            No hay reportes registrados
+                            ${reportes.length === 0 ? 'No hay reportes registrados' : 'No se encontraron reportes con estos filtros'}
                         </td>
                     </tr>
                 `;
@@ -866,7 +1250,7 @@
             }
             
             tbody.innerHTML = '';
-            reportes.slice(0, 5).forEach(reporte => {
+            visibles.forEach(reporte => {
                 // Calcular asistencia total de la filial
                 const reportesFilial = reportes.filter(r => r.mision === reporte.mision);
                 const asistenciaFilial = reportesFilial.reduce((sum, r) => sum + parseInt(r.total || 0), 0);
@@ -886,6 +1270,18 @@
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        function limpiarFiltrosReportes() {
+            document.getElementById('reportSearch').value = '';
+            document.getElementById('reportGroupFilter').value = 'all';
+            document.getElementById('reportLimit').value = '10';
+            cargarActividadReciente(window.reportesGlobales || []);
+        }
+
+        function irAReportes() {
+            document.getElementById('reportsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('reportSearch').focus({ preventScroll: true });
         }
 
         function verDetalleReporteAdmin(fechaCreacion) {
@@ -920,6 +1316,8 @@
         // Función para ver grupos específicos
         function verGrupo(grupo) {
             sessionStorage.setItem('grupoAsignado', grupo);
+            const datosGrupo = configuracionMisionera.grupos[grupo];
+            sessionStorage.setItem('misionSeleccionada', datosGrupo?.filialId || grupo);
             window.location.href = 'reporte-grupo.html';
         }
 
@@ -1628,7 +2026,7 @@
         }
 
         // Cargar datos al iniciar
-        cargarEquipos();
+        inicializarConfiguracionMisionera();
         // Las funciones de carga se llaman desde cargarReportesDesdeFirebase()
         // cargarControlAsistencia();
         // cargarEstadisticas();
